@@ -205,9 +205,6 @@ Enemy(500, 50)
 
 clock = pygame.time.Clock()
 
-#stage = 1
-#enemies = []
-
 FPS = 60
 
 def Loop():
@@ -234,8 +231,6 @@ def Loop():
 
 			if (event.key==pygame.K_SPACE):
 				bullet = Bullet(player1.rect.x,player1.rect.y)
-				#all_sprites.add(bullet)
-				#movingsprites.add(bullet)
 
 		if (event.type==pygame.KEYUP):
 			if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
@@ -247,9 +242,6 @@ def Loop():
 			if (event.key==pygame.K_DOWN or event.key==pygame.K_s):
 				player1.pos[3] = False
 
-	#while len(enemies) < stage:
-		#aenemy = Enemy(375, 50)
-		#enemies.append(aenemy)
 
 	movingsprites.update()
 
@@ -267,6 +259,11 @@ def Loop():
 		return False
 
 	pygame.sprite.groupcollide(enemies_group,playerbullets, True, True)
+
+	if len(enemies_group) == 0:
+		print "venceu"
+		pygame.quit()
+		return False
 
 	return True
 
