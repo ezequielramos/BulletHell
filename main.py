@@ -117,7 +117,7 @@ class Enemy(pygame.sprite.Sprite):
 
 		if numero >= 1000:
 			self.atirar += numero
-			print(self.atirar)
+			#print(self.atirar)
 			self.dispara()
 
 class Bullet(pygame.sprite.Sprite):
@@ -144,8 +144,13 @@ class Bullet(pygame.sprite.Sprite):
 	def update(self):
 
 		self.rect.y = self.rect.y-10
-
 		self.image.fill(whiteblue)
+
+		if(self.rect.y < 0):
+			all_sprites.remove(self)
+			movingsprites.remove(self)
+			playerbullets.remove(self)
+			del self
 
 class EnemyBullet(pygame.sprite.Sprite):
 
@@ -172,8 +177,13 @@ class EnemyBullet(pygame.sprite.Sprite):
 	def update(self):
 
 		self.rect.y = self.rect.y+10
-
 		self.image.fill(green)
+
+		if(self.rect.y > screen_height):
+			all_sprites.remove(self)
+			movingsprites.remove(self)
+			enemiesbullets.remove(self)
+			del self
 
 pygame.init()
 
