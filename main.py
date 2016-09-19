@@ -99,8 +99,9 @@ class Enemy(pygame.sprite.Sprite):
 
 		self.running = True
 
-		threading.Thread(target=self.dispara).start()
+		self.atirar = (pygame.time.get_ticks() / 1000) * 1000
 
+	#removido de uma thread separada, porem ainda por tempo(1 segundo)... verificar se consigo fazer por Frames(60)
 	def dispara(self):
 
 		self.bullet = EnemyBullet(self.rect.x,self.rect.y)
@@ -109,13 +110,15 @@ class Enemy(pygame.sprite.Sprite):
 		movingsprites.add(self.bullet)
 		enemiesbullets.add(self.bullet)
 
-		time.sleep(1)
-
-		if self.running:
-			self.dispara()
-
 	def update(self):
 		self.image.fill(red)
+
+		numero = ((pygame.time.get_ticks() - self.atirar) / 1000) * 1000
+
+		if numero >= 1000:
+			self.atirar += numero
+			print(self.atirar)
+			self.dispara()
 
 class Bullet(pygame.sprite.Sprite):
 	width = 5
@@ -196,6 +199,8 @@ FPS = 60
 
 def Loop():
 
+	global atiro
+
 	for event in pygame.event.get():
 
 		if event.type == pygame.QUIT:
@@ -243,6 +248,7 @@ def Loop():
 	all_sprites.draw(screen)
 
 	pygame.display.flip()
+
 	clock.tick(FPS)
 
 	return True
