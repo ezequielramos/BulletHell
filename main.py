@@ -1,7 +1,6 @@
 import pygame
 import random
 import time
-import threading
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -37,6 +36,9 @@ class Player(pygame.sprite.Sprite):
 		else:
 			self.my_joystick = pygame.joystick.Joystick(joystick_no)
 			self.my_joystick.init()
+
+		all_sprites.add(self)
+		movingsprites.add(self)
 
 	def update(self):
 
@@ -97,18 +99,16 @@ class Enemy(pygame.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 
-		self.running = True
-
 		self.atirar = (pygame.time.get_ticks() / 1000) * 1000
+
+		all_sprites.add(self)
+		movingsprites.add(self)
+		enemies_group.add(self)
 
 	#removido de uma thread separada, porem ainda por tempo(1 segundo)... verificar se consigo fazer por Frames(60)
 	def dispara(self):
 
 		self.bullet = EnemyBullet(self.rect.x,self.rect.y)
-
-		all_sprites.add(self.bullet)
-		movingsprites.add(self.bullet)
-		enemiesbullets.add(self.bullet)
 
 	def update(self):
 		self.image.fill(red)
@@ -137,6 +137,10 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect.x = x + 24
 		self.rect.y = y
 
+		all_sprites.add(self)
+		movingsprites.add(self)
+		playerbullets.add(self)
+
 	def update(self):
 
 		self.rect.y = self.rect.y-10
@@ -161,6 +165,10 @@ class EnemyBullet(pygame.sprite.Sprite):
 		self.rect.x = x + 24
 		self.rect.y = y + 50
 
+		all_sprites.add(self)
+		movingsprites.add(self)
+		enemiesbullets.add(self)
+
 	def update(self):
 
 		self.rect.y = self.rect.y+10
@@ -184,16 +192,21 @@ background.fill(black)
 all_sprites = pygame.sprite.Group()
 movingsprites = pygame.sprite.Group()
 enemiesbullets = pygame.sprite.Group()
+playerbullets = pygame.sprite.Group()
+
+enemies_group = pygame.sprite.Group()
 
 player1 = Player(375, 500, 0)
+Enemy(375, 50)
 
-all_sprites.add(player1)
-movingsprites.add(player1)
+Enemy(200, 50)
+
+Enemy(500, 50)
 
 clock = pygame.time.Clock()
 
-stage = 1
-enemies = []
+#stage = 1
+#enemies = []
 
 FPS = 60
 
@@ -204,8 +217,7 @@ def Loop():
 	for event in pygame.event.get():
 
 		if event.type == pygame.QUIT:
-			for enemy in enemies:
-				enemy.running = False
+
 			pygame.quit()
 			return False
 
@@ -222,8 +234,8 @@ def Loop():
 
 			if (event.key==pygame.K_SPACE):
 				bullet = Bullet(player1.rect.x,player1.rect.y)
-				all_sprites.add(bullet)
-				movingsprites.add(bullet)
+				#all_sprites.add(bullet)
+				#movingsprites.add(bullet)
 
 		if (event.type==pygame.KEYUP):
 			if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
@@ -235,11 +247,9 @@ def Loop():
 			if (event.key==pygame.K_DOWN or event.key==pygame.K_s):
 				player1.pos[3] = False
 
-	while len(enemies) < stage:
-		aenemy = Enemy(375, 50)
-		enemies.append(aenemy)
-		all_sprites.add(aenemy)
-		movingsprites.add(aenemy)
+	#while len(enemies) < stage:
+		#aenemy = Enemy(375, 50)
+		#enemies.append(aenemy)
 
 	movingsprites.update()
 
@@ -250,6 +260,13 @@ def Loop():
 	pygame.display.flip()
 
 	clock.tick(FPS)
+
+	if pygame.sprite.spritecollideany(player1,enemiesbullets):
+		print "morreu"
+		pygame.quit()
+		return False
+
+	pygame.sprite.groupcollide(enemies_group,playerbullets, True, True)
 
 	return True
 
