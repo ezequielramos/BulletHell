@@ -188,20 +188,11 @@ all_sprites.add(player1)
 movingsprites.add(player1)
 
 clock = pygame.time.Clock()
-done = False
-
-FPS = 25
-
-other_players = []
-oldervalue = [0]
-
 
 stage = 1
 enemies = []
 
 def Loop():
-	global other_players
-	global oldervalue
 	global stage
 	global enemies
 
@@ -244,11 +235,6 @@ def Loop():
 		enemies.append(aenemy)
 		all_sprites.add(aenemy)
 		movingsprites.add(aenemy)
-
-	if len(other_players) != oldervalue[0]:
-		oldervalue[0] = len(other_players)
-		all_sprites.add(player2)
-		movingsprites.add(player2)
 
 	movingsprites.update()
 
