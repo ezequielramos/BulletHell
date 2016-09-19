@@ -192,9 +192,9 @@ clock = pygame.time.Clock()
 stage = 1
 enemies = []
 
+FPS = 60
+
 def Loop():
-	global stage
-	global enemies
 
 	for event in pygame.event.get():
 
@@ -243,7 +243,7 @@ def Loop():
 	all_sprites.draw(screen)
 
 	pygame.display.flip()
-	clock.tick(60)
+	clock.tick(FPS)
 
 	return True
 
