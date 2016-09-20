@@ -11,7 +11,7 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 
 pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096) 
-bulletsound = pygame.mixer.Sound("laser.aiff")
+bulletsound = pygame.mixer.Sound("Laser_Shoot.wav")
 
 class Player(pygame.sprite.Sprite):
 
@@ -111,11 +111,13 @@ class Enemy(pygame.sprite.Sprite):
 
 		self.atirar = (pygame.time.get_ticks() / 1000) * 1000
 
+
+		self.framescount = 0
+
 		all_sprites.add(self)
 		movingsprites.add(self)
 		enemies_group.add(self)
 
-	#removido de uma thread separada, porem ainda por tempo(1 segundo)... verificar se consigo fazer por Frames(60)
 	def dispara(self):
 
 		self.bullet = EnemyBullet(self.rect.x,self.rect.y)
@@ -123,11 +125,10 @@ class Enemy(pygame.sprite.Sprite):
 	def update(self):
 		self.image.fill(red)
 
-		numero = ((pygame.time.get_ticks() - self.atirar) / 1000) * 1000
+		self.framescount += 1
 
-		if numero >= 1000:
-			self.atirar += numero
-			#print(self.atirar)
+		if self.framescount % 60 == 0:
+			self.framescount = 0
 			self.dispara()
 
 class Bullet(pygame.sprite.Sprite):
