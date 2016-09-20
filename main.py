@@ -1,6 +1,8 @@
 import pygame
-import random
 import time
+from os import path
+from pygame.mixer import Sound
+from random import randint
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -10,18 +12,22 @@ whiteblue = (150, 200, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 
-pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096) 
-bulletsound = pygame.mixer.Sound("Laser_Shoot.wav")
+players = []
 
+#I'm initialize the mixer manually(pygame.init would initialize it automatically) to be able to load the sound file globally
+pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096) 
+hit_effects = [Sound(path.join('sounds', 'ouch%d.wav' % i)) for i in range(1,8)]
+bulletsound = pygame.mixer.Sound("Laser_Shoot.wav")
 class Player(pygame.sprite.Sprite):
 
 	width = 50
 	height = 50
 	my_joystick = None
+	step_size = 5
 
 	def __init__(self, x, y, joystick_no):
 
-		super(Player,self).__init__()
+		super(Player, self).__init__()
 
 		self.image = pygame.Surface([self.width, self.height])
 		self.image.fill(white)
@@ -30,8 +36,6 @@ class Player(pygame.sprite.Sprite):
 
 		self.rect.x = x
 		self.rect.y = y
-
-		self.pos = [False,False,False,False]
 
 		joystick_count = pygame.joystick.get_count()
 		if joystick_count < joystick_no+1:
@@ -68,18 +72,11 @@ class Player(pygame.sprite.Sprite):
 				self.image.fill(white)'''
 
 		#teclado
-		else:
 
-			if self.pos[0]:
-				self.rect.x = self.rect.x-5
-			elif self.pos[1]:
-				self.rect.x = self.rect.x+5
-
-			if self.pos[2]:
-				self.rect.y = self.rect.y-5
-			elif self.pos[3]:
-				self.rect.y = self.rect.y+5
-
+	def move(self, axys, forward=True, steps=1):
+		self.rect[axys] += ((self.step_size * steps) * (1 if forward else -1))
+		
+		#self.rect.x = 0
 		if self.rect.x < 0:
 			self.rect.x = 0
 		elif self.rect.x + self.width > screen_width:
@@ -88,8 +85,7 @@ class Player(pygame.sprite.Sprite):
 		if self.rect.y < 0:
 			self.rect.y = 0
 		elif self.rect.y + self.height > screen_height:
-			self.rect.y = screen_height - self.height
-
+			self.rect.y = screen_height - self.height	
 		self.image.fill(white)
 
 class Enemy(pygame.sprite.Sprite):
@@ -155,7 +151,6 @@ class Bullet(pygame.sprite.Sprite):
 		playerbullets.add(self)
 
 	def update(self):
-
 		self.rect.y = self.rect.y-10
 		self.image.fill(whiteblue)
 
@@ -191,6 +186,11 @@ class EnemyBullet(pygame.sprite.Sprite):
 
 		self.rect.y = self.rect.y+10
 		self.image.fill(green)
+		for player in players:
+			if self.rect.colliderect(player.rect):
+				self.kill()
+				hit_effects[randint(0,6)].play()
+				break
 
 		if(self.rect.y > screen_height):
 			all_sprites.remove(self)
@@ -219,8 +219,8 @@ playerbullets = pygame.sprite.Group()
 
 enemies_group = pygame.sprite.Group()
 
-player1 = Player(375, 500, 0)
-Enemy(375, 50)
+player1 = Player(275, 500, 0)
+players.append(player1)
 
 Enemy(200, 50)
 
@@ -230,6 +230,11 @@ clock = pygame.time.Clock()
 
 FPS = 60
 
+def is_moving_up(key): return key[pygame.K_UP] or key[pygame.K_w]
+def is_moving_down(key): return key[pygame.K_DOWN] or key[pygame.K_s]
+def is_moving_right(key): return key[pygame.K_RIGHT] or key[pygame.K_d]
+def is_moving_left(key): return key[pygame.K_LEFT] or key[pygame.K_a]
+
 def Loop():
 
 	global atiro
@@ -237,34 +242,19 @@ def Loop():
 	for event in pygame.event.get():
 
 		if event.type == pygame.QUIT:
-
 			pygame.quit()
 			return False
+		elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE):
+			bullet = Bullet(player1.rect.x,player1.rect.y)
+			all_sprites.add(bullet)
+			movingsprites.add(bullet)
 
-		if (event.type==pygame.KEYDOWN):
-
-			if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
-				player1.pos[0] = True
-			if (event.key==pygame.K_RIGHT or event.key==pygame.K_d):
-				player1.pos[1] = True
-			if (event.key==pygame.K_UP or event.key==pygame.K_w):
-				player1.pos[2] = True
-			if (event.key==pygame.K_DOWN or event.key==pygame.K_s):
-				player1.pos[3] = True
-
-			if (event.key==pygame.K_SPACE):
-				bullet = Bullet(player1.rect.x,player1.rect.y)
-
-		if (event.type==pygame.KEYUP):
-			if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
-				player1.pos[0] = False
-			if (event.key==pygame.K_RIGHT or event.key==pygame.K_d):
-				player1.pos[1] = False
-			if (event.key==pygame.K_UP or event.key==pygame.K_w):
-				player1.pos[2] = False
-			if (event.key==pygame.K_DOWN or event.key==pygame.K_s):
-				player1.pos[3] = False
-
+	key = pygame.key.get_pressed()
+	
+	if(is_moving_down(key)): player1.move(1)
+	if(is_moving_right(key)): player1.move(0)
+	if(is_moving_up(key)): player1.move(1, False)
+	if(is_moving_left(key)): player1.move(0, False)	
 
 	movingsprites.update()
 
@@ -277,14 +267,14 @@ def Loop():
 	clock.tick(FPS)
 
 	if pygame.sprite.spritecollideany(player1,enemiesbullets):
-		print "morreu"
+		print("morreu")
 		pygame.quit()
 		return False
 
 	pygame.sprite.groupcollide(enemies_group,playerbullets, True, True)
 
 	if len(enemies_group) == 0:
-		print "venceu"
+		print("venceu")
 		pygame.quit()
 		return False
 
