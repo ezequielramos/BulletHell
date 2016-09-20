@@ -107,9 +107,6 @@ class Enemy(pygame.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 
-		self.atirar = (pygame.time.get_ticks() / 1000) * 1000
-
-
 		self.framescount = 0
 
 		all_sprites.add(self)
@@ -132,7 +129,6 @@ class Enemy(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
 	width = 5
 	height = 5
-	my_joystick = None
 
 	def __init__(self, x, y):
 
@@ -169,7 +165,6 @@ class EnemyBullet(pygame.sprite.Sprite):
 
 	width = 5
 	height = 5
-	my_joystick = None
 
 	def __init__(self, x, y):
 
