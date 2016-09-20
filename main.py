@@ -1,6 +1,5 @@
 import pygame
 import time
-import threading
 from os import path
 from pygame.mixer import Sound
 from random import randint
@@ -16,8 +15,9 @@ green = (0, 255, 0)
 players = []
 
 #I'm initialize the mixer manually(pygame.init would initialize it automatically) to be able to load the sound file globally
-pygame.mixer.init()
+pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096) 
 hit_effects = [Sound(path.join('sounds', 'ouch%d.wav' % i)) for i in range(1,8)]
+bulletsound = pygame.mixer.Sound("laser.aiff")
 
 class Player(pygame.sprite.Sprite):
 
@@ -45,6 +45,9 @@ class Player(pygame.sprite.Sprite):
 			self.my_joystick = pygame.joystick.Joystick(joystick_no)
 			self.my_joystick.init()
 
+		all_sprites.add(self)
+		movingsprites.add(self)
+
 	def update(self):
 
 		#controle xbox
@@ -56,11 +59,8 @@ class Player(pygame.sprite.Sprite):
 				self.rect.x = self.rect.x+vert_ayis_pos*10
 				self.rect.y = self.rect.y+vert_axis_pos*10
 
-				if self.rect.y < 0:
-					self.rect.y = 0
-				if self.rect.y > screen_height - self.height:
-					self.rect.y = screen_height - self.height
-
+			#cada botao do controle
+			'''
 			if self.my_joystick.get_button(0):
 				self.image.fill(green)
 			elif self.my_joystick.get_button(1):
@@ -70,12 +70,24 @@ class Player(pygame.sprite.Sprite):
 			elif self.my_joystick.get_button(3):
 				self.image.fill(yellow)
 			else:
-				self.image.fill(white)
+				self.image.fill(white)'''
 
 		#teclado
 
 	def move(self, axys, forward=True, steps=1):
 		self.rect[axys] += ((self.step_size * steps) * (1 if forward else -1))
+		
+		#self.rect.x = 0
+		if self.rect.x < 0:
+			self.rect.x = 0
+		elif self.rect.x + self.width > screen_width:
+			self.rect.x = screen_width - self.width
+
+		if self.rect.y < 0:
+			self.rect.y = 0
+		elif self.rect.y + self.height > screen_height:
+			self.rect.y = screen_height - self.height	
+		self.image.fill(white)
 
 class Enemy(pygame.sprite.Sprite):
 
@@ -94,25 +106,26 @@ class Enemy(pygame.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 
-		self.running = True
+		self.atirar = (pygame.time.get_ticks() / 1000) * 1000
 
-		threading.Thread(target=self.dispara).start()
+		all_sprites.add(self)
+		movingsprites.add(self)
+		enemies_group.add(self)
 
+	#removido de uma thread separada, porem ainda por tempo(1 segundo)... verificar se consigo fazer por Frames(60)
 	def dispara(self):
 
 		self.bullet = EnemyBullet(self.rect.x,self.rect.y)
 
-		all_sprites.add(self.bullet)
-		movingsprites.add(self.bullet)
-		enemiesbullets.add(self.bullet)
-
-		time.sleep(1)
-
-		if self.running:
-			self.dispara()
-
 	def update(self):
 		self.image.fill(red)
+
+		numero = ((pygame.time.get_ticks() - self.atirar) / 1000) * 1000
+
+		if numero >= 1000:
+			self.atirar += numero
+			#print(self.atirar)
+			self.dispara()
 
 class Bullet(pygame.sprite.Sprite):
 	width = 5
@@ -120,6 +133,8 @@ class Bullet(pygame.sprite.Sprite):
 	my_joystick = None
 
 	def __init__(self, x, y):
+
+		bulletsound.play()
 
 		super(Bullet,self).__init__()
 
@@ -131,9 +146,19 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect.x = x + 24
 		self.rect.y = y
 
+		all_sprites.add(self)
+		movingsprites.add(self)
+		playerbullets.add(self)
+
 	def update(self):
 		self.rect.y = self.rect.y-10
 		self.image.fill(whiteblue)
+
+		if(self.rect.y < 0):
+			all_sprites.remove(self)
+			movingsprites.remove(self)
+			playerbullets.remove(self)
+			del self
 
 class EnemyBullet(pygame.sprite.Sprite):
 
@@ -153,16 +178,25 @@ class EnemyBullet(pygame.sprite.Sprite):
 		self.rect.x = x + 24
 		self.rect.y = y + 50
 
+		all_sprites.add(self)
+		movingsprites.add(self)
+		enemiesbullets.add(self)
+
 	def update(self):
 
 		self.rect.y = self.rect.y+10
-
 		self.image.fill(green)
 		for player in players:
 			if self.rect.colliderect(player.rect):
 				self.kill()
 				hit_effects[randint(0,6)].play()
 				break
+
+		if(self.rect.y > screen_height):
+			all_sprites.remove(self)
+			movingsprites.remove(self)
+			enemiesbullets.remove(self)
+			del self
 
 pygame.init()
 
@@ -181,17 +215,18 @@ background.fill(black)
 all_sprites = pygame.sprite.Group()
 movingsprites = pygame.sprite.Group()
 enemiesbullets = pygame.sprite.Group()
+playerbullets = pygame.sprite.Group()
+
+enemies_group = pygame.sprite.Group()
 
 player1 = Player(275, 500, 0)
 players.append(player1)
 
-all_sprites.add(player1)
-movingsprites.add(player1)
+Enemy(200, 50)
+
+Enemy(500, 50)
 
 clock = pygame.time.Clock()
-
-stage = 1
-enemies = []
 
 FPS = 60
 
@@ -202,11 +237,11 @@ def is_moving_left(key): return key[pygame.K_LEFT] or key[pygame.K_a]
 
 def Loop():
 
+	global atiro
+
 	for event in pygame.event.get():
 
 		if event.type == pygame.QUIT:
-			for enemy in enemies:
-				enemy.running = False
 			pygame.quit()
 			return False
 		elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE):
@@ -221,12 +256,6 @@ def Loop():
 	if(is_moving_up(key)): player1.move(1, False)
 	if(is_moving_left(key)): player1.move(0, False)	
 
-	while len(enemies) < stage:
-		aenemy = Enemy(375, 50)
-		enemies.append(aenemy)
-		all_sprites.add(aenemy)
-		movingsprites.add(aenemy)
-
 	movingsprites.update()
 
 	screen.fill(black)
@@ -234,7 +263,20 @@ def Loop():
 	all_sprites.draw(screen)
 
 	pygame.display.flip()
+
 	clock.tick(FPS)
+
+	if pygame.sprite.spritecollideany(player1,enemiesbullets):
+		print("morreu")
+		pygame.quit()
+		return False
+
+	pygame.sprite.groupcollide(enemies_group,playerbullets, True, True)
+
+	if len(enemies_group) == 0:
+		print("venceu")
+		pygame.quit()
+		return False
 
 	return True
 
