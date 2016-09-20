@@ -10,6 +10,9 @@ whiteblue = (150, 200, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 
+pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096) 
+bulletsound = pygame.mixer.Sound("laser.aiff")
+
 class Player(pygame.sprite.Sprite):
 
 	width = 50
@@ -51,11 +54,8 @@ class Player(pygame.sprite.Sprite):
 				self.rect.x = self.rect.x+vert_ayis_pos*10
 				self.rect.y = self.rect.y+vert_axis_pos*10
 
-				if self.rect.y < 0:
-					self.rect.y = 0
-				if self.rect.y > screen_height - self.height:
-					self.rect.y = screen_height - self.height
-
+			#cada botao do controle
+			'''
 			if self.my_joystick.get_button(0):
 				self.image.fill(green)
 			elif self.my_joystick.get_button(1):
@@ -65,7 +65,7 @@ class Player(pygame.sprite.Sprite):
 			elif self.my_joystick.get_button(3):
 				self.image.fill(yellow)
 			else:
-				self.image.fill(white)
+				self.image.fill(white)'''
 
 		#teclado
 		else:
@@ -80,7 +80,17 @@ class Player(pygame.sprite.Sprite):
 			elif self.pos[3]:
 				self.rect.y = self.rect.y+5
 
-			self.image.fill(white)
+		if self.rect.x < 0:
+			self.rect.x = 0
+		elif self.rect.x + self.width > screen_width:
+			self.rect.x = screen_width - self.width
+
+		if self.rect.y < 0:
+			self.rect.y = 0
+		elif self.rect.y + self.height > screen_height:
+			self.rect.y = screen_height - self.height
+
+		self.image.fill(white)
 
 class Enemy(pygame.sprite.Sprite):
 
@@ -126,6 +136,8 @@ class Bullet(pygame.sprite.Sprite):
 	my_joystick = None
 
 	def __init__(self, x, y):
+
+		bulletsound.play()
 
 		super(Bullet,self).__init__()
 
