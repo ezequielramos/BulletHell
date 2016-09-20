@@ -12,7 +12,8 @@ whiteblue = (150, 200, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 
-players = []
+'''Colisao entre groups'''
+#pygame.sprite.groupcollide(enemies_group,playerbullets, True, True)
 
 #I'm initialize the mixer manually(pygame.init would initialize it automatically) to be able to load the sound file globally
 pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096) 
@@ -46,6 +47,7 @@ class Player(pygame.sprite.Sprite):
 
 		all_sprites.add(self)
 		movingsprites.add(self)
+		players_group.add(self)
 
 	def update(self):
 
@@ -154,11 +156,14 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect.y = self.rect.y-10
 		self.image.fill(whiteblue)
 
+		enemy_collide = pygame.sprite.spritecollideany(self,enemies_group)
+
+		if enemy_collide:
+			enemy_collide.kill()
+			self.kill()
+
 		if(self.rect.y < 0):
-			all_sprites.remove(self)
-			movingsprites.remove(self)
-			playerbullets.remove(self)
-			del self
+			self.kill()
 
 class EnemyBullet(pygame.sprite.Sprite):
 
@@ -186,17 +191,13 @@ class EnemyBullet(pygame.sprite.Sprite):
 
 		self.rect.y = self.rect.y+10
 		self.image.fill(green)
-		for player in players:
-			if self.rect.colliderect(player.rect):
-				self.kill()
-				hit_effects[randint(0,6)].play()
-				break
+
+		if pygame.sprite.spritecollideany(self,players_group):
+			self.kill()
+			hit_effects[randint(0,6)].play()
 
 		if(self.rect.y > screen_height):
-			all_sprites.remove(self)
-			movingsprites.remove(self)
-			enemiesbullets.remove(self)
-			del self
+			self.kill()
 
 pygame.init()
 
@@ -219,8 +220,9 @@ playerbullets = pygame.sprite.Group()
 
 enemies_group = pygame.sprite.Group()
 
+players_group = pygame.sprite.Group()
+
 player1 = Player(275, 500, 0)
-players.append(player1)
 
 Enemy(200, 50)
 
@@ -265,13 +267,6 @@ def Loop():
 	pygame.display.flip()
 
 	clock.tick(FPS)
-
-	if pygame.sprite.spritecollideany(player1,enemiesbullets):
-		print("morreu")
-		pygame.quit()
-		return False
-
-	pygame.sprite.groupcollide(enemies_group,playerbullets, True, True)
 
 	if len(enemies_group) == 0:
 		print("venceu")
