@@ -1,42 +1,41 @@
 import pygame
 from gamelib import rgb
+from gamelib.screen import screen
 from sprites.base_space_ship import BaseSpaceShip
+
 from gamelib.controller import Keyboard
+from gamelib.controller import Joystick
 from gamelib.controller import broadcast_pressed_key
-from gamelib.player import Player
+from gamelib.controller import SHOOT
+from gamelib.controller import UP
 
-from sprites import players
-from sprites import enemies
 from sprites import miscs
-
-#from sprites.bullet import Bullet
-
-pygame.init()
-
-screen_width = 800
-screen_height = 600
-screen = pygame.display.set_mode([screen_width, screen_height])
-
-pygame.display.set_caption('Test')
-
-background = pygame.Surface(screen.get_size())
-background = background.convert()
-
-background.fill(rgb.BLACK)
-
-clock = pygame.time.Clock()
+from entities.player import Player
+from entities.basic_enemy import BasicEnemy
+from entities import players
+from entities import ai
 
 FPS = 60
 
-BaseSpaceShip(enemies, coords = (200, 50), colour = rgb.RED)
-BaseSpaceShip(enemies, coords = (500, 50), colour = rgb.RED)
+pygame.display.set_caption('Test')
+clock = pygame.time.Clock()
+
+BasicEnemy(BaseSpaceShip(coords = (200, 50), colour = rgb.RED))
+BasicEnemy(BaseSpaceShip(coords = (500, 50), colour = rgb.RED))
 
 Keyboard(
-	Player(0, BaseSpaceShip(players, (275, 500)))
+	Player(BaseSpaceShip(coords = (275, 500)))
 )
 
-def Play():
+try:
+	jk_player = Player(BaseSpaceShip(coords = (375, 500), colour = rgb.GREEN))
+	Joystick(jk_player)
+except Exception:
+	jk_player.spaceship.kill()
+	jk_player.react(UP)
+	pass
 
+def Play():
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -47,20 +46,44 @@ def Play():
 
 	screen.fill(rgb.BLACK)
 
-	players.draw(screen)
-	enemies.draw(screen)
+	for player in players:
+		player.draw(screen)
+	for bot in ai:
+		bot.draw(screen)
+
 	miscs.draw(screen)
-
 	pygame.display.flip()
-
 	clock.tick(FPS)
 
-	if len(enemies) == 0:
+	if len(ai) == 0:
 		print("venceu")
 		pygame.quit()
 		return False
+	elif len(players) == 0:
+		print("seu perdedor")
+		pygame.quit()
+		return False
+	else:
+		return True
 
-	return True
-
+shit_ai = 25
+discard_pile = set()
+last_move = UP
 while Play():
+	shit_ai -= 1
+	if shit_ai <= 0:
+		if last_move == SHOOT:
+			last_move = UP
+
+		for bot in ai:
+			if bot.dead is False:
+				bot.react(last_move)
+				bot.react(SHOOT)
+			else:
+				discard_pile.add(bot)
+
+		last_move += 1
+		for bot in discard_pile:
+			ai.discard(bot)
+		shit_ai = 25
 	pass

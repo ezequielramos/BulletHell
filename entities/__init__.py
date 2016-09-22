@@ -1,0 +1,2 @@
+players = set()
+ai = set()

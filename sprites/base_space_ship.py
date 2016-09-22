@@ -11,8 +11,10 @@ class BaseSpaceShip(Sprite):
 	my_joystick = None
 	step_size = 5
 
-	def __init__(self, group_ref, coords = (0, 0), colour = WHITE):
-		Sprite.__init__(self, group_ref)
+	def __init__(self,  group_ref = None, coords = (0, 0), colour = WHITE):
+		Sprite.__init__(self)
+		if group_ref is not None:
+			group_ref.add(self)
 
 		self.image = Surface([self.width, self.height])
 		self.image.fill(colour)
@@ -22,14 +24,9 @@ class BaseSpaceShip(Sprite):
 		self.rect.x = coords[0]
 		self.rect.y = coords[1]
 
-		#all_sprites.add(self)
-		#movingsprites.add(self)
-		#players_group.add(self)
-
 	def move(self, axys, forward=True, steps=1):
 		self.rect[axys] += ((self.step_size * steps) * (1 if forward else -1))
-		
-		#self.rect.x = 0
+
 		if self.rect.x < 0:
 			self.rect.x = 0
 		elif self.rect.x + self.width > screen.WIDTH:
@@ -38,9 +35,7 @@ class BaseSpaceShip(Sprite):
 		if self.rect.y < 0:
 			self.rect.y = 0
 		elif self.rect.y + self.height > screen.HEIGHT:
-			self.rect.y = screen.HEIGHT - self.height	
-		self.image.fill(WHITE)
+			self.rect.y = screen.HEIGHT - self.height
 
 	def shoot(self, angle):
-		bullet = Bullet(self, angle)
-
+		Bullet(self, angle)
