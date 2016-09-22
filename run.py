@@ -40,6 +40,12 @@ def Play():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			return False
+		elif (event.type == pygame.KEYDOWN):
+
+			if(event.key == pygame.K_SPACE):
+				for player in players:				
+					player.react(SHOOT)
+
 
 	miscs.update()
 	broadcast_pressed_key()

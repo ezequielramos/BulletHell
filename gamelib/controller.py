@@ -22,11 +22,11 @@ class _Default():
 
 class Keyboard(_Default):
 	actions_dict = {
+		#SHOOT: [pygame.K_SPACE],
 		UP: [pygame.K_UP, pygame.K_w],
 		DOWN: [pygame.K_DOWN, pygame.K_s],
 		RIGHT: [pygame.K_RIGHT, pygame.K_d],
-		LEFT: [pygame.K_LEFT, pygame.K_a],
-		SHOOT: [pygame.K_SPACE]
+		LEFT: [pygame.K_LEFT, pygame.K_a]		
 	}
 
 #This sould inherit the Joystick class

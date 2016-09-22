@@ -2,8 +2,8 @@ from pygame import display
 from pygame import Surface
 from gamelib.rgb import BLACK
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1024
+HEIGHT = 720
 
 screen = display.set_mode([WIDTH, HEIGHT])
 

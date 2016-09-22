@@ -2,6 +2,7 @@ import pygame.sprite
 from pygame.sprite import Sprite
 from pygame import Surface
 from gamelib.rgb import WHITEBLUE
+from gamelib.screen import HEIGHT
 from math import sin
 from math import cos
 from sprites import miscs
@@ -47,7 +48,7 @@ class Bullet(Sprite):
 		self.rect.x += self.move_x
 
 		# Depending on the direction shot the bullet wont be killed
-		if self.rect.y < 0:
+		if self.rect.y < 0 or self.rect.y > HEIGHT:
 			self.kill()
 		else:
 			for group in self.enemy_entities:
