@@ -20,6 +20,7 @@ class Player(GroupSingle):
 			elif(action == RIGHT): self.spaceship.move(0)
 			elif(action == UP): self.spaceship.move(1, False)
 			elif(action == LEFT): self.spaceship.move(0, False)
-			elif(action == SHOOT): self.spaceship.shoot(90)
+			elif(action == SHOOT):
+				self.spaceship.shoot(0,-10)
 		else:			
 			players.discard(self)

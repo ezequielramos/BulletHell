@@ -18,7 +18,7 @@ class Bullet(Sprite):
 	speed = 10
 	enemy_entities = None
 
-	def __init__(self, spriteOrigin, angle):
+	def __init__(self, spriteOrigin, move_x, move_y):
 		Sprite.__init__(self, miscs)
 		super(Bullet, self).__init__()
 
@@ -30,8 +30,8 @@ class Bullet(Sprite):
 		self.rect.x = spriteOrigin.rect.x + 20
 		self.rect.y = spriteOrigin.rect.y
 
-		self.move_y = (-1 * round(sin(angle))) * 10
-		self.move_x = (-1 * round(cos(angle))) * 10
+		self.move_y = move_y
+		self.move_x = move_x
 		self.spriteOrigin = spriteOrigin
 		
 		for player in players:

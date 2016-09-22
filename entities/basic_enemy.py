@@ -22,6 +22,11 @@ class BasicEnemy(GroupSingle):
 			elif(action == RIGHT): self.spaceship.move(0)
 			elif(action == UP): self.spaceship.move(1, False)
 			elif(action == LEFT): self.spaceship.move(0, False)
-			elif(action == SHOOT): self.spaceship.shoot(-90)
+			elif(action == SHOOT):
+				#atirando igual uma shotgun, kkkk (me mata agora fdp)
+				self.spaceship.shoot(-1,10)
+				self.spaceship.shoot(0,10)
+				self.spaceship.shoot(1,10)
+
 		else:
 			self.dead = True

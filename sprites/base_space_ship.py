@@ -37,5 +37,5 @@ class BaseSpaceShip(Sprite):
 		elif self.rect.y + self.height > screen.HEIGHT:
 			self.rect.y = screen.HEIGHT - self.height
 
-	def shoot(self, angle):
-		Bullet(self, angle)
+	def shoot(self, move_x, move_y):
+		Bullet(self, move_x, move_y)
