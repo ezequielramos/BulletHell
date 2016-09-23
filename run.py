@@ -5,7 +5,7 @@ from sprites.base_space_ship import BaseSpaceShip
 
 from gamelib.controller import Keyboard
 from gamelib.controller import Joystick
-from gamelib.controller import broadcast_pressed_key
+from gamelib.controller import broadcast_event
 from gamelib.controller import SHOOT
 from gamelib.controller import UP
 
@@ -36,19 +36,12 @@ except Exception:
 	pass
 
 def Play():
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			pygame.quit()
-			return False
-		elif (event.type == pygame.KEYDOWN):
-
-			if(event.key == pygame.K_SPACE):
-				for player in players:				
-					player.react(SHOOT)
-
+	if len(pygame.event.get(pygame.QUIT)) > 0:
+		pygame.quit()		
+		return False
 
 	miscs.update()
-	broadcast_pressed_key()
+	broadcast_event()
 
 	screen.fill(rgb.BLACK)
 
