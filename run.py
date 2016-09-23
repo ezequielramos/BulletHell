@@ -77,7 +77,7 @@ while Play():
 		for bot in ai:
 			if bot.dead is False:
 				bot.react(last_move)
-				bot.react(SHOOT)
+				#bot.react(SHOOT)
 			else:
 				discard_pile.add(bot)
 

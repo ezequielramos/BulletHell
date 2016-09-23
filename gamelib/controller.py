@@ -2,10 +2,11 @@ import pygame
 
 _controllers = set()
 
-_keyboardEvts = [pygame.KEYDOWN, pygame.KEYUP]
-# Other events are:
+# Other joystick events are:
 #pygame.JOYBALLMOTION, pygame.JOYHATMOTION, pygame.JOYBUTTONUP, pygame.JOYBUTTONDOWN
 _joystickEvts = [pygame.JOYAXISMOTION]
+_keyboardEvts = [pygame.KEYDOWN, pygame.KEYUP]
+
 
 UP = 0
 RIGHT = 1
@@ -66,39 +67,68 @@ class Keyboard(_Default):
 			if xunxo_break_shooting is not None:
 				self.keydown_mem.discard(xunxo_break_shooting)
 
-
 #This sould inherit the Joystick class
+#This also should be renamed to XboxJoystick
 class Joystick(_Default):
+
+	joy_id = 0
+	L_AXIS_X = 0
+	L_AXIS_Y = 1
+	TRIGGER = 2 
 
 	def __init__(self, entity):		
 		if pygame.joystick.get_count() == 0:
 			raise Exception('Mas q cu!')
 		_Default.__init__(self, entity)
 
-		self.joystick = pygame.joystick.Joystick(0)
+		self.joystick = pygame.joystick.Joystick(self.joy_id)
 		self.joystick.init()
 
-	def stroke(self, evt):
-		axis_x = self.joystick.get_axis(0)
-		axis_y = self.joystick.get_axis(1)
-		triggers = self.joystick.get_axis(2)#WTF?!?!
-		triggers = max(0,(triggers + 1))# 1~== nothing left trigger < 1 > right trigger
-		# # 1 can be both as well, no idea how to solve this
-		#print(triggers)
-		if triggers < 0.4:
-			self.entity.react(SHOOT)
+	evts_mem = set()
 
-		if axis_x > 0.2:
+	def stroke(self, evt):
+		#Por enquanto so vou gravar os movimentos do axis num tuple (id, value) pq foda-se
+		if evt.joy == self.joy_id:
+			for stored_evt in self.evts_mem:
+				if stored_evt[0] == evt.axis:
+					self.evts_mem.discard(stored_evt)
+					break
+			self.evts_mem.add((evt.axis, evt.value))
+
+	def act(self):
+		xunxo_break_shooting = None
+		for evt in self.evts_mem:
+			etype = evt[0]
+			val = evt[1]
+			if etype == self.L_AXIS_X:
+				self.deal_with_l_axis_x(val)
+			elif etype == self.L_AXIS_Y:
+				self.deal_with_l_axis_y(val)
+			elif etype == self.TRIGGER:
+				if self.deal_with_triggers(val):
+					xunxo_break_shooting = evt
+
+		if xunxo_break_shooting:
+			self.evts_mem.discard(xunxo_break_shooting)
+
+	def deal_with_l_axis_x(self, val):
+		if val > 0.2:
 			self.entity.react(RIGHT)
-		elif axis_x < -0.2:
+		elif val < -0.2:
 			self.entity.react(LEFT)
 
-		if axis_y > 0.2:
+	def deal_with_l_axis_y(self, val):
+		if val > 0.2:
 			self.entity.react(DOWN)
-		elif axis_y < -0.2:
+		elif val < -0.2:
 			self.entity.react(UP)
-
-		pass
+	
+	def deal_with_triggers(self, val):
+		wtf = max(0,(val + 1))# +-1 == nothing or both | left trigger < 1 > right trigger		
+		if round(wtf, 2) <= 0.00:#Right trigger
+			self.entity.react(SHOOT)
+			return True
+		return False
 
 def broadcast_event():	
 	if len(_controllers):		
