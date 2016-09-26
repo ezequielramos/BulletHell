@@ -15,13 +15,12 @@ from entities.basic_enemy import BasicEnemy
 from entities import players
 from entities import ai
 
+import random
+
 FPS = 60
 
 pygame.display.set_caption('Test')
 clock = pygame.time.Clock()
-
-BasicEnemy(BaseSpaceShip(coords = (200, 50), colour = rgb.RED))
-BasicEnemy(BaseSpaceShip(coords = (500, 50), colour = rgb.RED))
 
 Keyboard(
 	Player(BaseSpaceShip(coords = (275, 500)))
@@ -54,11 +53,12 @@ def Play():
 	pygame.display.flip()
 	clock.tick(FPS)
 
-	if len(ai) == 0:
+	'''if len(ai) == 0:
 		print("venceu")
 		pygame.quit()
 		return False
-	elif len(players) == 0:
+	el'''
+	if len(players) == 0:
 		print("seu perdedor")
 		pygame.quit()
 		return False
@@ -68,7 +68,21 @@ def Play():
 shit_ai = 25
 discard_pile = set()
 last_move = UP
+
+stage = 1
+
 while Play():
+
+	if len(ai) == 0:
+
+		for i in range(0,stage):
+			BasicEnemy(BaseSpaceShip(coords = (random.randint(1, 8) * 100, 50), colour = rgb.RED))
+		
+		stage += 1
+
+	#BasicEnemy(BaseSpaceShip(coords = (200, 50), colour = rgb.RED))
+	#BasicEnemy(BaseSpaceShip(coords = (500, 50), colour = rgb.RED))
+
 	shit_ai -= 1
 	if shit_ai <= 0:
 		if last_move == SHOOT:
@@ -77,7 +91,7 @@ while Play():
 		for bot in ai:
 			if bot.dead is False:
 				bot.react(last_move)
-				#bot.react(SHOOT)
+				bot.react(SHOOT)
 			else:
 				discard_pile.add(bot)
 
