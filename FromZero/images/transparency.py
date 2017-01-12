@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open('mainship.png')
+img = Image.open('simple_laser_shot.png')
 img = img.convert("RGBA")
 datas = img.getdata()
 

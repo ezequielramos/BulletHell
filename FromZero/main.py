@@ -46,7 +46,7 @@ pygame.mixer.music.play(-1)
 
 pygame.display.set_mode((x,y))
 
-a = pygame.image.load('images/mainship.png')
+a = pygame.image.load('images/mainship_t.png')
 pygame.display.set_icon(a)
 pygame.display.set_caption("FromZero")
 
