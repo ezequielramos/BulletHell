@@ -1,7 +1,7 @@
 import basic
 import options
 
-def mainmenu(pygame):
+def mainmenu(pygame, game):
     import sys
     from pygame.locals import *
 
@@ -23,19 +23,22 @@ def mainmenu(pygame):
                 if event.key == K_RETURN:
 
                     if mainmenu.get_position() == 0:#start
-                        print "vitoria"
+                        game.start(pygame)
+
                     if mainmenu.get_position() == 1:#options
 
                         options.optionsmenu(pygame)
 
-                        surface.fill((51,51,51))
-
-                        mainmenu.create_structure()
-                        mainmenu.draw()
-
                     if mainmenu.get_position() == 2:#quit
                         pygame.display.quit()
                         sys.exit()
+                        return False
+
+                    surface.fill((51,51,51))
+
+                    mainmenu.create_structure()
+                    mainmenu.draw()
+
                 if event.key == K_ESCAPE:
                     pygame.display.quit()
                     sys.exit()

@@ -14,6 +14,8 @@ import pygame
 from pygame.mixer import Sound
 from os import path
 
+import game
+
 conn = sqlite3.connect('data/data.db')
 
 c = conn.cursor()
@@ -52,4 +54,4 @@ pygame.display.set_caption("FromZero")
 
 conn.close()
 
-menu.main.mainmenu(pygame)
+menu.main.mainmenu(pygame, game.run)
