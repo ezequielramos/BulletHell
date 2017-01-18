@@ -1,5 +1,6 @@
 import basic
 import sqlite3
+import game
 
 def soundmenu(pygame):
     import sys
@@ -25,23 +26,23 @@ def soundmenu(pygame):
                 if event.key == pygame.locals.K_RETURN:
 
                     if optionsmenu.get_position() == 0:
-                        volume = 1
+                        game.static.volume = 1
                     if optionsmenu.get_position() == 1:
-                        volume = 0.8
+                        game.static.volume = 0.8
                     if optionsmenu.get_position() == 2:
-                        volume = 0.6
+                        game.static.volume = 0.6
                     if optionsmenu.get_position() == 3:
-                        volume = 0.4
+                        game.static.volume = 0.4
                     if optionsmenu.get_position() == 4:
-                        volume = 0.2
+                        game.static.volume = 0.2
                     if optionsmenu.get_position() == 5:
-                        volume = 0
+                        game.static.volume = 0
 
-                    pygame.mixer.music.set_volume(0.5*volume)
+                    pygame.mixer.music.set_volume(0.5*game.static.volume)
 
                     conn = sqlite3.connect('data/data.db')
                     c = conn.cursor()
-                    c.execute("UPDATE config set volume = ?", (volume, ))
+                    c.execute("UPDATE config set volume = ?", (game.static.volume, ))
                     conn.commit()
                     conn.close()
 

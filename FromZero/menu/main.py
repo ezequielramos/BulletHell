@@ -1,9 +1,9 @@
 import basic
 import options
+import sys
+from pygame.locals import *
 
-def mainmenu(pygame, game):
-    import sys
-    from pygame.locals import *
+def mainmenu(pygame, game, static):
 
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
@@ -23,6 +23,7 @@ def mainmenu(pygame, game):
                 if event.key == K_RETURN:
 
                     if mainmenu.get_position() == 0:#start
+                        static.score = 0
                         game.start(pygame)
 
                     if mainmenu.get_position() == 1:#options

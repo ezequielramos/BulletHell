@@ -1,5 +1,6 @@
 import basic
 import sqlite3
+import game
 
 def resolutionmenu(pygame):
     import sys
@@ -25,17 +26,17 @@ def resolutionmenu(pygame):
                 if event.key == pygame.locals.K_RETURN:
 
                     if optionsmenu.get_position() == 0:
-                        x = 1280
-                        y = 720
+                        game.static.width = 1280
+                        game.static.height = 720
                     if optionsmenu.get_position() == 1:
-                        x = 800
-                        y = 450
+                        game.static.width = 800
+                        game.static.height = 450
 
-                    surface = pygame.display.set_mode((x,y))
+                    surface = pygame.display.set_mode((game.static.width,game.static.height))
 
                     conn = sqlite3.connect('data/data.db')
                     c = conn.cursor()
-                    c.execute("UPDATE config set length = ?, height = ?", (x, y))
+                    c.execute("UPDATE config set width = ?, height = ?", (game.static.width, game.static.height))
                     conn.commit()
                     conn.close()
 

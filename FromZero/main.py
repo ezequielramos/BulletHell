@@ -20,33 +20,29 @@ conn = sqlite3.connect('data/data.db')
 
 c = conn.cursor()
 
-x = 0
-y = 0
-volume = 0
-
 try:
-	for row in c.execute('SELECT length, height, volume FROM config'):
-		x = row[0]
-		y = row[1]
-		volume = row[2]
+	for row in c.execute('SELECT width, height, volume FROM config'):
+		game.static.width = row[0]
+		game.static.height = row[1]
+		game.static.volume = row[2]
 
 except:
 
-	x = 800
-	y = 450
-	volume = 0.4
+	game.static.width = 800
+	game.static.height = 450
+	game.static.volume = 0.4
 
-	c.execute("CREATE TABLE config (length integer, height integer, volume decimal)")
-	c.execute("INSERT INTO config VALUES (?,?,?)", (x,y, volume))
+	c.execute("CREATE TABLE config (width integer, height integer, volume decimal)")
+	c.execute("INSERT INTO config VALUES (?,?,?)", (game.static.width,game.static.height, game.static.volume))
 	conn.commit()
 
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load("sounds/main.mp3")
-pygame.mixer.music.set_volume(0.5*volume)
+pygame.mixer.music.set_volume(0.5*game.static.volume)
 pygame.mixer.music.play(-1)
 
-pygame.display.set_mode((x,y))
+pygame.display.set_mode((game.static.width,game.static.height))
 
 a = pygame.image.load('images/mainship_t.png')
 pygame.display.set_icon(a)
@@ -54,4 +50,4 @@ pygame.display.set_caption("FromZero")
 
 conn.close()
 
-menu.main.mainmenu(pygame, game.run)
+menu.main.mainmenu(pygame, game.run, game.static)

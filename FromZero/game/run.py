@@ -1,5 +1,6 @@
 import sys
 import pygame
+import static
 
 bulletImage = pygame.image.load('images/simple_laser_shot_t.png')
 backgroundImage = pygame.image.load('images/background.jpg')
@@ -65,9 +66,11 @@ def start(pygame):
 
 	clock = pygame.time.Clock()
 
-	a = Player(375,400)
+	a = Player(375,350)
 	nave = pygame.sprite.Group()
 	nave.add(a)
+
+	gameHud = HUD()
 
 	backgrounds = pygame.sprite.Group()
 
@@ -80,10 +83,12 @@ def start(pygame):
 	bulletSprites = pygame.sprite.Group()
 
 	#enemies = pygame.sprite.Group()
-	enemy = Enemy(50,50)
-
 	enemies = [];
 
+	enemy = Enemy(50,50)
+	enemies.append(enemy)
+
+	enemy = Enemy(0,50)
 	enemies.append(enemy)
 
 	#enemies.add(enemy)
@@ -138,8 +143,49 @@ def start(pygame):
 		for enemy in enemies:
 			enemy.draw(surface)
 
+		gameHud.draw(surface)
+
 		pygame.display.flip()
 		clock.tick(FPS)
+
+class HUD(pygame.sprite.Group):
+
+	x = 0
+	y = 0
+
+	def __init__(self):
+
+		super(HUD,self).__init__()
+
+		self.x = 0
+		self.y = static.height - 50
+		'''self.group = pygame.sprite.Group()
+		self.hitimage = pygame.image.load('images/hitted_t.png')'''
+
+		base = pygame.sprite.Sprite()
+
+		base.image = pygame.Surface([static.width, 50])
+		base.image.fill((51,51,51))
+
+		base.rect = base.image.get_rect()
+
+		base.rect.x = self.x
+		base.rect.y = self.y
+
+		self.add(base)
+
+	def update(self):
+
+		for sprite in self:
+			sprite.rect.x = sprite.rect.x + 1
+			sprite.image = enemyImage
+
+		for sprite in self.group:
+			sprite.rect.x = sprite.rect.x + 1
+
+		self.x = self.x + 1
+
+		self.group.update()
 		
 class Player(pygame.sprite.Sprite):
 
@@ -161,14 +207,26 @@ class Player(pygame.sprite.Sprite):
 	def update(self):
 
 		if self.pos[0]:
-			self.rect.x = self.rect.x-3
+			if self.rect.x-3 < 0:
+				self.rect.x = 0
+			else:
+				self.rect.x = self.rect.x-3
 		elif self.pos[1]:
-			self.rect.x = self.rect.x+3
+			if self.rect.x+3 > (static.width - 32):
+				self.rect.x = static.width - 32
+			else:
+				self.rect.x = self.rect.x+3
 
 		if self.pos[2]:
-			self.rect.y = self.rect.y-3
+			if self.rect.y-3 < 0:
+				self.rect.y = 0
+			else:
+				self.rect.y = self.rect.y-3
 		elif self.pos[3]:
-			self.rect.y = self.rect.y+3
+			if self.rect.y+3 > (static.height - 80):
+				self.rect.y = static.height - 80
+			else:
+				self.rect.y = self.rect.y+3
 
 class Bullet(pygame.sprite.Sprite):
 	width = 3
@@ -304,6 +362,9 @@ class Explosion(pygame.sprite.Sprite):
 	def __init__(self, x, y, sprite_group):
 
 		explosion.play()
+
+		static.score += 10
+		print static.score
 
 		super(Explosion,self).__init__()
 
