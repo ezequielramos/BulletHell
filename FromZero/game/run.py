@@ -223,8 +223,8 @@ class Player(pygame.sprite.Sprite):
 			else:
 				self.rect.y = self.rect.y-3
 		elif self.pos[3]:
-			if self.rect.y+3 > (static.height - 80):
-				self.rect.y = static.height - 80
+			if self.rect.y+3 > (static.height - 50 - 32):
+				self.rect.y = static.height - 50 - 32
 			else:
 				self.rect.y = self.rect.y+3
 
