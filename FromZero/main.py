@@ -24,6 +24,8 @@ x = 0
 y = 0
 volume = 0
 
+print "aaaa"
+
 try:
 	for row in c.execute('SELECT length, height, volume FROM config'):
 		x = row[0]
