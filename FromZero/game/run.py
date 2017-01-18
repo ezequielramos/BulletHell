@@ -79,9 +79,14 @@ def start(pygame):
 
 	bulletSprites = pygame.sprite.Group()
 
-	enemies = pygame.sprite.Group()
-	enemy = Enemy(375,50)
-	enemies.add(enemy)
+	#enemies = pygame.sprite.Group()
+	enemy = Enemy(50,50)
+
+	enemies = [];
+
+	enemies.append(enemy)
+
+	#enemies.add(enemy)
 
 	surface = pygame.display.get_surface()
 
@@ -91,34 +96,47 @@ def start(pygame):
 
 		backgrounds.update()
 		bulletSprites.update()
-		enemies.update()
+
+		for enemy in enemies:
+			enemy.update()
+
 		explosions.update()
 
 		backgrounds.draw(surface)
 		nave.draw(surface)
 		bulletSprites.draw(surface)
 
-		collisions = pygame.sprite.groupcollide(enemies,bulletSprites,False,False)
+		for enemy in enemies:
 
-		if collisions:
+			enemy.update()
+			collisions = pygame.sprite.groupcollide(enemy.group,bulletSprites,False,False)
 
-			for enemy in collisions:
-				for bullet in collisions[enemy]:
+			if collisions:
 
-					enemy.hit(bullet.damage)
+				for enemySprite in collisions:
 
-					if enemy.heath < 1:
+					if enemySprite.collidible:
 
-						Explosion(enemy.rect.x,enemy.rect.y,explosions)
+						for bullet in collisions[enemySprite]:
 
-						enemies.remove(enemy)
-						del enemy
+							enemy.hit(bullet.damage)
 
-					bulletSprites.remove(bullet)
-					del bullet
+							if enemy.heath < 1:
+
+								Explosion(enemy.x,enemy.y,explosions)
+
+								enemies.remove(enemy)
+								del enemy
+
+
+
+							bulletSprites.remove(bullet)
+							del bullet
 
 		explosions.draw(surface)
-		enemies.draw(surface)
+
+		for enemy in enemies:
+			enemy.draw(surface)
 
 		pygame.display.flip()
 		clock.tick(FPS)
@@ -205,7 +223,7 @@ class Background(pygame.sprite.Sprite):
 
 
 
-class Enemy(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Group):
 
 	width = 32
 	height = 32
@@ -215,21 +233,67 @@ class Enemy(pygame.sprite.Sprite):
 
 		super(Enemy,self).__init__()
 
+		self.x = x
+		self.y = y
+		self.group = pygame.sprite.Group()
 		self.hitimage = pygame.image.load('images/hitted_t.png')
 
-		self.image = enemyImage
+		base = pygame.sprite.Sprite()
 
-		self.rect = self.image.get_rect()
+		base.image = pygame.Surface([self.width, 8])
 
-		self.rect.x = x
-		self.rect.y = y
+		base.rect = base.image.get_rect()
+
+		base.rect.x = x
+		base.rect.y = y
+		base.collidible = True
+
+		self.group.add(base)
+
+		base = pygame.sprite.Sprite()
+
+		base.image = pygame.Surface([6, 22])
+
+		base.rect = base.image.get_rect()
+
+		base.rect.x = x + 14
+		base.rect.y = y + 8
+		base.collidible = True
+
+		self.group.add(base)
+
+		imagem = pygame.sprite.Sprite()
+
+		imagem.image = enemyImage
+		imagem.rect = imagem.image.get_rect()
+
+		imagem.rect.x = x
+		imagem.rect.y = y
+
+		imagem.collidible = False
+
+		self.add(imagem)
 
 	def hit(self, damage):
 		self.heath = self.heath - damage
-		self.image = self.hitimage
+
+		for sprite in self:
+			sprite.image = self.hitimage
 
 	def update(self):
-		self.image = enemyImage
+
+		for sprite in self:
+			sprite.rect.x = sprite.rect.x + 1
+			sprite.image = enemyImage
+
+		for sprite in self.group:
+			sprite.rect.x = sprite.rect.x + 1
+
+		self.x = self.x + 1
+
+		self.group.update()
+
+
 
 class Explosion(pygame.sprite.Sprite):
 
