@@ -71,6 +71,7 @@ def start(pygame):
 	nave.add(a)
 
 	gameHud = HUD()
+	gameInfoHud = InfoHUD()
 
 	backgrounds = pygame.sprite.Group()
 
@@ -145,6 +146,9 @@ def start(pygame):
 
 		gameHud.draw(surface)
 
+		gameInfoHud.update()
+		gameInfoHud.draw(surface)
+
 		pygame.display.flip()
 		clock.tick(FPS)
 
@@ -159,8 +163,6 @@ class HUD(pygame.sprite.Group):
 
 		self.x = 0
 		self.y = static.height - 50
-		'''self.group = pygame.sprite.Group()
-		self.hitimage = pygame.image.load('images/hitted_t.png')'''
 
 		base = pygame.sprite.Sprite()
 
@@ -174,18 +176,36 @@ class HUD(pygame.sprite.Group):
 
 		self.add(base)
 
+class InfoHUD(pygame.sprite.Group):
+
+	x = 0
+	y = 0
+
+	def __init__(self):
+
+		super(InfoHUD,self).__init__()
+
+		self.x = 0
+		self.y = static.height - 50
+
+		self.font = pygame.font.Font('data/coders_crux/coders_crux.ttf', 32)
+		surface = self.font.render("Score: " + str(static.score).zfill(7), 1, (255, 255, 153) )
+
+		self.Score = pygame.sprite.Sprite()
+		self.Score.image = surface
+		self.Score.rect = surface.get_rect()
+		self.Score.rect.x = self.x + 15
+		self.Score.rect.y = static.height - 30
+
+		self.add(self.Score)
+
 	def update(self):
 
-		for sprite in self:
-			sprite.rect.x = sprite.rect.x + 1
-			sprite.image = enemyImage
-
-		for sprite in self.group:
-			sprite.rect.x = sprite.rect.x + 1
-
-		self.x = self.x + 1
-
-		self.group.update()
+		surface = self.font.render("Score: " + str(static.score).zfill(7), 1, (255, 255, 153) )
+		self.Score.image = surface
+		self.Score.rect = surface.get_rect()
+		self.Score.rect.x = self.x + 15
+		self.Score.rect.y = static.height - 30
 		
 class Player(pygame.sprite.Sprite):
 
@@ -363,8 +383,7 @@ class Explosion(pygame.sprite.Sprite):
 
 		explosion.play()
 
-		static.score += 10
-		print static.score
+		static.score += 100
 
 		super(Explosion,self).__init__()
 

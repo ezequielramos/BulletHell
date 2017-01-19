@@ -1,9 +1,9 @@
-class Pole:
+class Surface:
 
     def __init__(self, pygame):    
         text = ''
-        pole = pygame.Surface
-        pole_rect = pygame.Rect
+        surface = pygame.Surface
+        surface_rect = pygame.Rect
         select_rect = pygame.Rect
 
 class Menu:
@@ -60,7 +60,7 @@ class Menu:
         self.pygame.draw.rect(menu,self.selected_color,select_rect)
 
         for i in xrange(self.quantity_pol):
-            menu.blit(self.flap[i].pole,self.flap[i].pole_rect)
+            menu.blit(self.flap[i].surface,self.flap[i].surface_rect)
         self.pygame.display.get_surface().blit(menu,self.position_paste)
         return self.position_selected
 
@@ -72,21 +72,21 @@ class Menu:
         self.menu_height = 0
         self.font = self.pygame.font.Font(self.font_path, self.font_size)
         for i in xrange(self.quantity_pol):
-            self.flap.append(Pole(self.pygame))
+            self.flap.append(Surface(self.pygame))
             self.flap[i].text = self.list[i]
-            self.flap[i].pole = self.font.render(self.flap[i].text, 1, self.text_color)
+            self.flap[i].surface = self.font.render(self.flap[i].text, 1, self.text_color)
 
-            self.flap[i].pole_rect = self.flap[i].pole.get_rect()
+            self.flap[i].surface_rect = self.flap[i].surface.get_rect()
             movement = int(self.font_size * 0.2)
 
-            height = self.flap[i].pole_rect.height
-            self.flap[i].pole_rect.left = movement
-            self.flap[i].pole_rect.top = movement+(movement*2+height)*i
+            height = self.flap[i].surface_rect.height
+            self.flap[i].surface_rect.left = movement
+            self.flap[i].surface_rect.top = movement+(movement*2+height)*i
 
-            width = self.flap[i].pole_rect.width+movement*2
-            height = self.flap[i].pole_rect.height+movement*2            
-            left = self.flap[i].pole_rect.left-movement
-            top = self.flap[i].pole_rect.top-movement
+            width = self.flap[i].surface_rect.width+movement*2
+            height = self.flap[i].surface_rect.height+movement*2            
+            left = self.flap[i].surface_rect.left-movement
+            top = self.flap[i].surface_rect.top-movement
 
             self.flap[i].select_rect = (left,top ,width, height)
             if width > self.menu_width:
