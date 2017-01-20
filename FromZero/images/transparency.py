@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open('img_1689.png')
+img = Image.open('no_heath.png')
 img = img.convert("RGBA")
 datas = img.getdata()
 
