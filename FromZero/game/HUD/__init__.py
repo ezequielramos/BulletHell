@@ -3,6 +3,7 @@ __import__
 import pygame
 import game.static
 import score
+import gameover
 
 class HUD(pygame.sprite.Group):
 

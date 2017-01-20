@@ -17,21 +17,23 @@ def Play(pygame, player1, bulletSprites):
 
 		if (event.type==pygame.KEYDOWN):
 
-			if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
-				player1.pos[0] = True
-			if (event.key==pygame.K_RIGHT or event.key==pygame.K_d):
-				player1.pos[1] = True
-			if (event.key==pygame.K_UP or event.key==pygame.K_w):
-				player1.pos[2] = True
-			if (event.key==pygame.K_DOWN or event.key==pygame.K_s):
-				player1.pos[3] = True
-
 			if event.key == pygame.K_ESCAPE:
 				return False
 
-			if (event.key==pygame.K_SPACE):
-				bullet = Bullet(player1.imagem.rect.x,player1.imagem.rect.y)
-				bulletSprites.add(bullet)
+			if static.lifes >= 0:
+
+				if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
+					player1.pos[0] = True
+				if (event.key==pygame.K_RIGHT or event.key==pygame.K_d):
+					player1.pos[1] = True
+				if (event.key==pygame.K_UP or event.key==pygame.K_w):
+					player1.pos[2] = True
+				if (event.key==pygame.K_DOWN or event.key==pygame.K_s):
+					player1.pos[3] = True
+
+				if (event.key==pygame.K_SPACE):
+					bullet = Bullet(player1.imagem.rect.x,player1.imagem.rect.y)
+					bulletSprites.add(bullet)
 
 		if (event.type==pygame.KEYUP):
 			if (event.key==pygame.K_LEFT or event.key==pygame.K_a):
@@ -96,7 +98,7 @@ def start(pygame):
 
 	surface = pygame.display.get_surface()
 
-	gameover = GameOver(surface.get_rect().centerx,surface.get_rect().centery)
+	gameover = HUD.gameover.GameOver(surface.get_rect().centerx,surface.get_rect().centery)
 
 	explosions = pygame.sprite.Group()
 
@@ -193,23 +195,6 @@ def start(pygame):
 
 		pygame.display.flip()
 		clock.tick(FPS)
-
-class GameOver(pygame.sprite.Group):
-
-	def __init__(self,x,y):
-
-		super(GameOver,self).__init__()
-
-		self.font = pygame.font.Font('data/coders_crux/coders_crux.ttf', 64)
-		surface = self.font.render("GAME OVER", 1, (255, 255, 153) )
-
-		self.Score = pygame.sprite.Sprite()
-		self.Score.image = surface
-		self.Score.rect = surface.get_rect()
-		self.Score.rect.x = x - surface.get_rect().centerx
-		self.Score.rect.y = y - surface.get_rect().centery
-
-		self.add(self.Score)
 
 class Player(pygame.sprite.Group):
 
