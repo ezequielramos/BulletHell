@@ -1,20 +1,17 @@
 import sys
 import pygame
 import static
+import objects
+import HUD
 
 bulletImage = pygame.image.load('images/simple_laser_shot_t.png')
 backgroundImage = pygame.image.load('images/background.jpg')
-enemyImage = pygame.image.load('images/mainship_t_o.png')
 
 pygame.mixer.init() 
 bulletsound = pygame.mixer.Sound("sounds/Laser_Shoot.wav")
 explosion = pygame.mixer.Sound("sounds/Explosion.wav")
 
 def Play(pygame, player1, bulletSprites):
-
-	#surface = pygame.display.get_surface()
-	#surface.fill((51,51,51))
-
 
 	for event in pygame.event.get():
 
@@ -70,8 +67,8 @@ def start(pygame):
 	nave = pygame.sprite.Group()
 	nave.add(a)
 
-	gameHud = HUD()
-	gameInfoHud = InfoHUD()
+	gameHud = HUD.HUD()
+	gameInfoHud = HUD.score.Score()
 
 	backgrounds = pygame.sprite.Group()
 
@@ -86,10 +83,10 @@ def start(pygame):
 	#enemies = pygame.sprite.Group()
 	enemies = [];
 
-	enemy = Enemy(50,50)
+	enemy = objects.enemy.Enemy(50,50)
 	enemies.append(enemy)
 
-	enemy = Enemy(0,50)
+	enemy = objects.enemy.Enemy(0,50)
 	enemies.append(enemy)
 
 	#enemies.add(enemy)
@@ -151,62 +148,7 @@ def start(pygame):
 
 		pygame.display.flip()
 		clock.tick(FPS)
-
-class HUD(pygame.sprite.Group):
-
-	x = 0
-	y = 0
-
-	def __init__(self):
-
-		super(HUD,self).__init__()
-
-		self.x = 0
-		self.y = static.height - 50
-
-		base = pygame.sprite.Sprite()
-
-		base.image = pygame.Surface([static.width, 50])
-		base.image.fill((51,51,51))
-
-		base.rect = base.image.get_rect()
-
-		base.rect.x = self.x
-		base.rect.y = self.y
-
-		self.add(base)
-
-class InfoHUD(pygame.sprite.Group):
-
-	x = 0
-	y = 0
-
-	def __init__(self):
-
-		super(InfoHUD,self).__init__()
-
-		self.x = 0
-		self.y = static.height - 50
-
-		self.font = pygame.font.Font('data/coders_crux/coders_crux.ttf', 32)
-		surface = self.font.render("Score: " + str(static.score).zfill(7), 1, (255, 255, 153) )
-
-		self.Score = pygame.sprite.Sprite()
-		self.Score.image = surface
-		self.Score.rect = surface.get_rect()
-		self.Score.rect.x = self.x + 15
-		self.Score.rect.y = static.height - 30
-
-		self.add(self.Score)
-
-	def update(self):
-
-		surface = self.font.render("Score: " + str(static.score).zfill(7), 1, (255, 255, 153) )
-		self.Score.image = surface
-		self.Score.rect = surface.get_rect()
-		self.Score.rect.x = self.x + 15
-		self.Score.rect.y = static.height - 30
-		
+	
 class Player(pygame.sprite.Sprite):
 
 	width = 32
@@ -270,13 +212,6 @@ class Bullet(pygame.sprite.Sprite):
 
 		self.rect.y = self.rect.y-10
 
-		'''
-		all_sprites.remove(self)
-		movingsprites.remove(self)
-		playerbullets.remove(self)
-		del self
-		'''
-
 class Background(pygame.sprite.Sprite):
 	width = 1178
 	height = 663
@@ -298,80 +233,6 @@ class Background(pygame.sprite.Sprite):
 
 		if self.rect.y == 663:
 			self.rect.y = -663
-
-
-
-class Enemy(pygame.sprite.Group):
-
-	width = 32
-	height = 32
-	heath = 5
-
-	def __init__(self, x, y):
-
-		super(Enemy,self).__init__()
-
-		self.x = x
-		self.y = y
-		self.group = pygame.sprite.Group()
-		self.hitimage = pygame.image.load('images/hitted_t.png')
-
-		base = pygame.sprite.Sprite()
-
-		base.image = pygame.Surface([self.width, 8])
-
-		base.rect = base.image.get_rect()
-
-		base.rect.x = x
-		base.rect.y = y
-		base.collidible = True
-
-		self.group.add(base)
-
-		base = pygame.sprite.Sprite()
-
-		base.image = pygame.Surface([6, 22])
-
-		base.rect = base.image.get_rect()
-
-		base.rect.x = x + 14
-		base.rect.y = y + 8
-		base.collidible = True
-
-		self.group.add(base)
-
-		imagem = pygame.sprite.Sprite()
-
-		imagem.image = enemyImage
-		imagem.rect = imagem.image.get_rect()
-
-		imagem.rect.x = x
-		imagem.rect.y = y
-
-		imagem.collidible = False
-
-		self.add(imagem)
-
-	def hit(self, damage):
-		self.heath = self.heath - damage
-
-		for sprite in self:
-			sprite.image = self.hitimage
-
-	def update(self):
-
-		for sprite in self:
-			sprite.rect.x = sprite.rect.x + 1
-			sprite.image = enemyImage
-
-		for sprite in self.group:
-			sprite.rect.x = sprite.rect.x + 1
-
-		self.x = self.x + 1
-
-		self.group.update()
-
-
 
 class Explosion(pygame.sprite.Sprite):
 
