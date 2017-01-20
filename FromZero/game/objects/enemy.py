@@ -25,7 +25,6 @@ class Enemy(pygame.sprite.Group):
 
 		base.rect.x = x
 		base.rect.y = y
-		base.collidible = True
 
 		self.group.add(base)
 
@@ -37,7 +36,6 @@ class Enemy(pygame.sprite.Group):
 
 		base.rect.x = x + 14
 		base.rect.y = y + 8
-		base.collidible = True
 
 		self.group.add(base)
 
@@ -48,8 +46,6 @@ class Enemy(pygame.sprite.Group):
 
 		imagem.rect.x = x
 		imagem.rect.y = y
-
-		imagem.collidible = False
 
 		self.add(imagem)
 

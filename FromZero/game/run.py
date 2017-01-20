@@ -30,7 +30,7 @@ def Play(pygame, player1, bulletSprites):
 				return False
 
 			if (event.key==pygame.K_SPACE):
-				bullet = Bullet(player1.rect.x,player1.rect.y)
+				bullet = Bullet(player1.imagem.rect.x,player1.imagem.rect.y)
 				bulletSprites.add(bullet)
 
 		if (event.type==pygame.KEYUP):
@@ -59,13 +59,16 @@ def start(pygame):
 	pygame.key.set_repeat(199,69)#(delay,interval)
 	pygame.display.update()
 
+	static.score = 0
+	static.lifes = 1
+
 	FPS = 60
 
 	clock = pygame.time.Clock()
 
-	a = Player(375,350)
-	nave = pygame.sprite.Group()
-	nave.add(a)
+	nave = Player(375,350)
+	#nave = pygame.sprite.Group()
+	#nave.add(a)
 
 	gameHud = HUD.HUD()
 	gameInfoHud = HUD.score.Score()
@@ -93,9 +96,11 @@ def start(pygame):
 
 	surface = pygame.display.get_surface()
 
+	gameover = GameOver(surface.get_rect().centerx,surface.get_rect().centery)
+
 	explosions = pygame.sprite.Group()
 
-	while Play(pygame, a, bulletSprites):
+	while Play(pygame, nave, bulletSprites):
 
 		backgrounds.update()
 		bulletSprites.update()
@@ -107,6 +112,7 @@ def start(pygame):
 
 		backgrounds.draw(surface)
 		nave.draw(surface)
+
 		bulletSprites.draw(surface)
 
 		for enemy in enemies:
@@ -118,23 +124,59 @@ def start(pygame):
 
 				for enemySprite in collisions:
 
-					if enemySprite.collidible:
+					for bullet in collisions[enemySprite]:
 
-						for bullet in collisions[enemySprite]:
+						enemy.hit(bullet.damage)
 
-							enemy.hit(bullet.damage)
+						if enemy.heath < 1:
 
-							if enemy.heath < 1:
+							Explosion(enemy.x,enemy.y,explosions)
 
-								Explosion(enemy.x,enemy.y,explosions)
+							enemies.remove(enemy)
+							del enemy
 
-								enemies.remove(enemy)
-								del enemy
+							static.score += 100
 
+						bulletSprites.remove(bullet)
+						del bullet
 
+			else:
 
-							bulletSprites.remove(bullet)
-							del bullet
+				collisions = pygame.sprite.groupcollide(enemy.group,nave.group,False,False)
+
+				if collisions:
+
+					Explosion(nave.imagem.rect.x,nave.imagem.rect.y,explosions)
+
+					enemy.hit(3)
+
+					if enemy.heath < 1:
+
+						Explosion(enemy.x,enemy.y,explosions)
+
+						enemies.remove(enemy)
+						del enemy
+
+						static.score += 100
+
+					static.lifes -= 1
+					if static.lifes < 0:
+
+						for sprite in nave.group:
+							nave.group.remove(sprite)
+
+						for sprite in nave:
+							nave.remove(sprite)
+
+					else:
+						nave.imagem.rect.x = 375
+						nave.imagem.rect.y = 350
+
+						nave.base.rect.x = nave.imagem.rect.x
+						nave.base.rect.y = nave.imagem.rect.y + 24
+						nave.tronco.rect.x = nave.imagem.rect.x + 14
+						nave.tronco.rect.y = nave.imagem.rect.y + 2
+
 
 		explosions.draw(surface)
 
@@ -146,10 +188,30 @@ def start(pygame):
 		gameInfoHud.update()
 		gameInfoHud.draw(surface)
 
+		if len(nave.sprites()) == 0:
+			gameover.draw(surface)
+
 		pygame.display.flip()
 		clock.tick(FPS)
-	
-class Player(pygame.sprite.Sprite):
+
+class GameOver(pygame.sprite.Group):
+
+	def __init__(self,x,y):
+
+		super(GameOver,self).__init__()
+
+		self.font = pygame.font.Font('data/coders_crux/coders_crux.ttf', 64)
+		surface = self.font.render("GAME OVER", 1, (255, 255, 153) )
+
+		self.Score = pygame.sprite.Sprite()
+		self.Score.image = surface
+		self.Score.rect = surface.get_rect()
+		self.Score.rect.x = x - surface.get_rect().centerx
+		self.Score.rect.y = y - surface.get_rect().centery
+
+		self.add(self.Score)
+
+class Player(pygame.sprite.Group):
 
 	width = 32
 	height = 32
@@ -157,38 +219,83 @@ class Player(pygame.sprite.Sprite):
 
 		super(Player,self).__init__()
 
-		self.image = pygame.image.load('images/mainship_t.png')
+		self.group = pygame.sprite.Group()
+		
+		base = pygame.sprite.Sprite()
 
-		self.rect = self.image.get_rect()
+		base.image = pygame.Surface([self.width, 8])
 
-		self.rect.x = x
-		self.rect.y = y
+		base.rect = base.image.get_rect()
+
+		base.rect.x = x
+		base.rect.y = y + 24
+
+		self.base = base
+
+		self.group.add(self.base)
+
+		base = pygame.sprite.Sprite()
+
+		base.image = pygame.Surface([6, 22])
+
+		base.rect = base.image.get_rect()
+
+		base.rect.x = x + 14
+		base.rect.y = y + 2
+
+		self.tronco = base
+
+		self.group.add(self.tronco)
+
+		self.imagem = pygame.sprite.Sprite()
+
+		self.imagem.image = pygame.image.load('images/mainship_t.png')
+
+		self.imagem.rect = self.imagem.image.get_rect()
+
+		self.imagem.rect.x = x
+		self.imagem.rect.y = y
 
 		self.pos = [False,False,False,False]
 
+		self.add(self.imagem)
+
 	def update(self):
 
+		differX = 0
+		differY = 0
+
 		if self.pos[0]:
-			if self.rect.x-3 < 0:
-				self.rect.x = 0
+			if self.imagem.rect.x-3 < 0:
+				differX = 0
 			else:
-				self.rect.x = self.rect.x-3
+				differX = -3
 		elif self.pos[1]:
-			if self.rect.x+3 > (static.width - 32):
-				self.rect.x = static.width - 32
+			if self.imagem.rect.x+3 > (static.width - 32):
+				differX = 0
 			else:
-				self.rect.x = self.rect.x+3
+				differX = 3
 
 		if self.pos[2]:
-			if self.rect.y-3 < 0:
-				self.rect.y = 0
+			if self.imagem.rect.y-3 < 0:
+				differY = 0
 			else:
-				self.rect.y = self.rect.y-3
+				differY = -3
 		elif self.pos[3]:
-			if self.rect.y+3 > (static.height - 50 - 32):
-				self.rect.y = static.height - 50 - 32
+			if self.imagem.rect.y+3 > (static.height - 50 - 32):
+				differY = 0
 			else:
-				self.rect.y = self.rect.y+3
+				differY = 3
+
+		for sprite in self:
+			sprite.rect.x = sprite.rect.x + differX
+			sprite.rect.y = sprite.rect.y + differY
+
+		for sprite in self.group:
+			sprite.rect.x = sprite.rect.x + differX
+			sprite.rect.y = sprite.rect.y + differY
+
+		self.group.update()
 
 class Bullet(pygame.sprite.Sprite):
 	width = 3
@@ -243,8 +350,6 @@ class Explosion(pygame.sprite.Sprite):
 	def __init__(self, x, y, sprite_group):
 
 		explosion.play()
-
-		static.score += 100
 
 		super(Explosion,self).__init__()
 

@@ -50,4 +50,6 @@ pygame.display.set_caption("FromZero")
 
 conn.close()
 
+pygame.mouse.set_visible(False)
+
 menu.main.mainmenu(pygame, game.run, game.static)

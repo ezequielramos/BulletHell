@@ -23,7 +23,6 @@ def mainmenu(pygame, game, static):
                 if event.key == K_RETURN:
 
                     if mainmenu.get_position() == 0:#start
-                        static.score = 0
                         game.start(pygame)
 
                     if mainmenu.get_position() == 1:#options
