@@ -1,6 +1,7 @@
 import pygame
 
 enemyImage = pygame.image.load('images/mainship_t_o.png')
+hitimage = pygame.image.load('images/hitted_t.png')
 
 class Enemy(pygame.sprite.Group):
 
@@ -15,7 +16,6 @@ class Enemy(pygame.sprite.Group):
 		self.x = x
 		self.y = y
 		self.group = pygame.sprite.Group()
-		self.hitimage = pygame.image.load('images/hitted_t.png')
 
 		base = pygame.sprite.Sprite()
 
@@ -53,7 +53,7 @@ class Enemy(pygame.sprite.Group):
 		self.heath = self.heath - damage
 
 		for sprite in self:
-			sprite.image = self.hitimage
+			sprite.image = hitimage
 
 	def update(self):
 

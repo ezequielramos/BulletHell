@@ -4,6 +4,7 @@ import pygame
 import game.static
 import score
 import gameover
+import lifes
 
 class HUD(pygame.sprite.Group):
 

@@ -74,6 +74,7 @@ def start(pygame):
 
 	gameHud = HUD.HUD()
 	gameInfoHud = HUD.score.Score()
+	lifesHud = HUD.lifes.Lifes()
 
 	backgrounds = pygame.sprite.Group()
 
@@ -189,6 +190,9 @@ def start(pygame):
 
 		gameInfoHud.update()
 		gameInfoHud.draw(surface)
+
+		lifesHud.update()
+		lifesHud.draw(surface)
 
 		if len(nave.sprites()) == 0:
 			gameover.draw(surface)
