@@ -1,46 +1,37 @@
 import basic
-import options
-import coop
-import sys
 from pygame.locals import *
 
-def mainmenu(pygame, game, static):
+def coopmenu(pygame, game):
 
-    def singleplayer():
-        game.start(pygame, True)
+    def host():
+        game.start(pygame, False)
         return True
 
-    def coopMenu():
-        coop.coopmenu(pygame, game)
+    def join():
+        print "join"
         return True
 
-    def optionsMenu():
-        options.optionsmenu(pygame)
-        return True
-
-    def quit():
-        pygame.display.quit()
-        sys.exit()
+    def back():
         return False
 
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
 
-    mainmenu = basic.Menu(['Singleplayer', 'Co-op','Options','Quit'], pygame)#necessary
+    mainmenu = basic.Menu(['Host', 'Join', 'Back'], pygame)
 
-    menuFunctions = [singleplayer,coopMenu,optionsMenu,quit]
+    menuFunctions = [host,join,back]
 
-    mainmenu.draw()#necessary
+    mainmenu.draw()
     
-    pygame.key.set_repeat(199,69)#(delay,interval)
+    pygame.key.set_repeat(199,69)
     pygame.display.update()
     while 1:
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_UP:
-                    mainmenu.draw(-1) #here is the Menu class function
+                    mainmenu.draw(-1) 
                 if event.key == K_DOWN:
-                    mainmenu.draw(1) #here is the Menu class function
+                    mainmenu.draw(1)
                 if event.key == K_RETURN:
 
                     ret = menuFunctions[mainmenu.get_position()]()
@@ -54,8 +45,7 @@ def mainmenu(pygame, game, static):
                     mainmenu.draw()
 
                 if event.key == K_ESCAPE:
-                    pygame.display.quit()
-                    sys.exit()
+                    return False
                 pygame.display.update()
             elif event.type == QUIT:
                 pygame.display.quit()

@@ -23,6 +23,7 @@ class Enemy(pygame.sprite.Group):
 		self.rota = []
 		self.umquarto = 0
 		self.gira = True
+		self.velocidade = 1
 
 		base = pygame.sprite.Sprite()
 
@@ -99,13 +100,13 @@ class Enemy(pygame.sprite.Group):
 			self.gira = True
 
 		for sprite in self:
-			sprite.rect.x += self.direction
-			self.x = sprite.rect.x
-			self.y = sprite.rect.y
+			sprite.rect.x += (self.direction * self.velocidade)
 			sprite.image = enemyImage
+			self.x = sprite.rect.x
+			self.y = sprite.rect.y			
 
 		for sprite in self.group:
-			sprite.rect.x += self.direction
+			sprite.rect.x += (self.direction * self.velocidade)
 
 	def movRota(self):
 
@@ -147,12 +148,12 @@ class Enemy(pygame.sprite.Group):
 
 		circ = 2 * math.pi * r
 
-		circ = int(circ / 1)
+		circ = int(circ / self.velocidade)
 
 		self.umquarto = circ / 4
 
 		if centrox < centroyTela:
-			self.umquarto *= 3					
+			self.umquarto *= 3
 
 		qtd = (2 * math.pi) / circ
 		atual = qtd

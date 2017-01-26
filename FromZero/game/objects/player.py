@@ -1,5 +1,6 @@
 import pygame
 import game.static
+import bullet
 
 class Player(pygame.sprite.Group):
 
@@ -50,6 +51,8 @@ class Player(pygame.sprite.Group):
 
 		self.add(self.imagem)
 
+		self.bullets = bullet.Bullet()
+
 	def update(self):
 
 		differX = 0
@@ -86,3 +89,7 @@ class Player(pygame.sprite.Group):
 			sprite.rect.y = sprite.rect.y + differY
 
 		self.group.update()
+		self.bullets.update()
+
+	def shot(self):
+		self.bullets.shot(self.imagem.rect.x, self.imagem.rect.y)
