@@ -32,7 +32,7 @@ def Play(pygame, player1, bulletSprites):
 					player1.pos[3] = True
 
 				if (event.key==pygame.K_SPACE):
-					bullet = Bullet(player1.imagem.rect.x,player1.imagem.rect.y)
+					bullet = Bullet(player1.imagem.rect.x,player1.imagem.rect.y, bulletSprites)
 					bulletSprites.add(bullet)
 
 		if (event.type==pygame.KEYUP):
@@ -89,11 +89,10 @@ def start(pygame):
 	#enemies = pygame.sprite.Group()
 	enemies = [];
 
-	enemy = objects.enemy.Enemy(50,50)
-	enemies.append(enemy)
+	for i in range(0,17):
 
-	enemy = objects.enemy.Enemy(0,50)
-	enemies.append(enemy)
+		enemy = objects.enemy.Enemy(-50 + (i*(-50)),50)
+		enemies.append(enemy)
 
 	#enemies.add(enemy)
 
@@ -205,11 +204,13 @@ class Bullet(pygame.sprite.Sprite):
 	height = 6
 	damage = 1
 
-	def __init__(self, x, y):
+	def __init__(self, x, y, bulletSprites):
 
 		bulletsound.play()
 
 		super(Bullet,self).__init__()
+
+		self.bulletSprites = bulletSprites
 
 		self.image = bulletImage
 
@@ -221,6 +222,10 @@ class Bullet(pygame.sprite.Sprite):
 	def update(self):
 
 		self.rect.y = self.rect.y-10
+
+		if self.rect.y < 6:
+			self.bulletSprites.remove(self)
+			del self
 
 class Background(pygame.sprite.Sprite):
 	width = 1178
