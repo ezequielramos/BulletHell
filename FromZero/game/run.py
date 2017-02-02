@@ -69,7 +69,7 @@ def start(pygame, singlePlayer):
 	gameInfoHud = HUD.score.Score()
 	lifesHud = HUD.lifes.Lifes()
 
-	backgrounds = objects.background.Background()
+	#backgrounds = objects.background.Background()
 
 	enemies = [];
 
@@ -86,14 +86,16 @@ def start(pygame, singlePlayer):
 
 	while Play(pygame, nave):
 
-		backgrounds.update()
+		#backgrounds.update()
+
+		surface.fill((0,0,0))
 
 		for enemy in enemies:
 			enemy.update()
 
 		explosions.update()
 
-		backgrounds.draw(surface)
+		#backgrounds.draw(surface)
 		nave.draw(surface)
 
 		nave.bullets.draw(surface)
@@ -105,12 +107,14 @@ def start(pygame, singlePlayer):
 
 			if collisions:
 
-				for enemySprite in collisions:
+				enemySprite, bulletsSprites = collisions.popitem()
 
-					for bullet in collisions[enemySprite]:
+				for bullet in bulletsSprites:
 
+					try:
 						enemy.hit(nave.bullets.damage)
 
+						#abstrair isso aqui
 						if enemy.heath < 1:
 							explosions.addExplosion(enemy.x,enemy.y)
 
@@ -118,6 +122,10 @@ def start(pygame, singlePlayer):
 							del enemy
 
 							static.score += 100
+
+						nave.bullets.remove(bullet)
+						del bullet
+					except:
 
 						nave.bullets.remove(bullet)
 						del bullet
