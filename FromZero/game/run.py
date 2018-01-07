@@ -1,8 +1,8 @@
 import sys
 import pygame
-import static
-import objects
-import HUD
+from . import static
+from . import objects
+from . import HUD
 
 def Play(pygame, player1):
 

@@ -59,7 +59,7 @@ class Menu:
         select_rect = self.flap[self.position_selected].select_rect
         self.pygame.draw.rect(menu,self.selected_color,select_rect)
 
-        for i in xrange(self.quantity_pol):
+        for i in range(self.quantity_pol):
             menu.blit(self.flap[i].surface,self.flap[i].surface_rect)
         self.pygame.display.get_surface().blit(menu,self.position_paste)
         return self.position_selected
@@ -71,7 +71,7 @@ class Menu:
         movement = 0
         self.menu_height = 0
         self.font = self.pygame.font.Font(self.font_path, self.font_size)
-        for i in xrange(self.quantity_pol):
+        for i in range(self.quantity_pol):
             self.flap.append(Surface(self.pygame))
             self.flap[i].text = self.list[i]
             self.flap[i].surface = self.font.render(self.flap[i].text, 1, self.text_color)

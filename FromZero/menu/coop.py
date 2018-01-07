@@ -1,4 +1,4 @@
-import basic
+from . import basic
 from pygame.locals import *
 
 def coopmenu(pygame, game):
@@ -8,7 +8,7 @@ def coopmenu(pygame, game):
         return True
 
     def join():
-        print "join"
+        print("join")
         return True
 
     def back():

@@ -1,5 +1,13 @@
+import sqlite3
 import pygame
 from pygame.locals import *
+
+import pygame
+from pygame.mixer import Sound
+from os import path
+
+import game
+import menu
 
 if not pygame.display.get_init():
     pygame.display.init()
@@ -7,14 +15,6 @@ if not pygame.display.get_init():
 if not pygame.font.get_init():
     pygame.font.init()
 
-import menu
-import sqlite3
-
-import pygame
-from pygame.mixer import Sound
-from os import path
-
-import game
 
 conn = sqlite3.connect('data/data.db')
 

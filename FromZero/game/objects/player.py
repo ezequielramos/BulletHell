@@ -1,6 +1,6 @@
 import pygame
 import game.static
-import bullet
+from . import bullet
 
 class Player(pygame.sprite.Group):
 

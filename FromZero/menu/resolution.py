@@ -1,4 +1,4 @@
-import basic
+from . import basic
 import sqlite3
 import game
 

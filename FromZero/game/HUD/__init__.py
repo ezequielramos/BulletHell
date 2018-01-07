@@ -2,9 +2,9 @@ __import__
 
 import pygame
 import game.static
-import score
-import gameover
-import lifes
+from . import score
+from . import gameover
+from . import lifes
 
 class HUD(pygame.sprite.Group):
 

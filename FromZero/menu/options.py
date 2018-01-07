@@ -1,10 +1,11 @@
-import basic
-import resolution
-import sound
+from . import basic
+from . import resolution
+from . import sound
+
+import sys
+from pygame.locals import *
 
 def optionsmenu(pygame):
-    import sys
-    from pygame.locals import *
 
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
@@ -30,7 +31,7 @@ def optionsmenu(pygame):
                         sound.soundmenu(pygame)
 
                     if optionsmenu.get_position() == 1:#keys
-                        print "vitoria"
+                        print("vitoria")
 
                     if optionsmenu.get_position() == 2:#resolution
                         resolution.resolutionmenu(pygame)

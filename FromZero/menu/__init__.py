@@ -1,3 +1,3 @@
 __import__
 
-import main
+from . import main

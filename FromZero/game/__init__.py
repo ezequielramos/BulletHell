@@ -1,4 +1,3 @@
 __import__
-
-import run
-import static
+from . import run
+from . import static

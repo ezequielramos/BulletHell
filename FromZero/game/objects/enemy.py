@@ -112,12 +112,12 @@ class Enemy(pygame.sprite.Group):
 
 		if self.direction == 1:
 			if len(self.rota) > (self.umquarto):
-				position = self.rota.pop((self.umquarto))
+				position = self.rota.pop(int(self.umquarto))
 			else:
 				position = self.rota.pop(0)
 		else:
 			if self.umquarto >= 0:
-				position = self.rota.pop((self.umquarto))
+				position = self.rota.pop(int(self.umquarto))
 				self.umquarto -= 1
 			else:
 				position = self.rota.pop()

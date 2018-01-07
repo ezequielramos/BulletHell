@@ -1,7 +1,7 @@
 __import__
 
-import enemy
-import player
-import explosion
-import background
-import bullet
+from . import enemy
+from . import player
+from . import explosion
+from . import background
+from . import bullet

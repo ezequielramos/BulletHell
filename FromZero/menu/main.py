@@ -1,6 +1,6 @@
-import basic
-import options
-import coop
+from . import basic
+from . import options
+from . import coop
 import sys
 from pygame.locals import *
 
