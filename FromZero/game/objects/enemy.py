@@ -2,16 +2,16 @@ import pygame
 import game
 import math
 
-enemyImage = pygame.image.load('images/mainship_t_o.png')
-hitimage = pygame.image.load('images/hitted_t.png')
-
 class Enemy(pygame.sprite.Group):
 
 	width = 32
 	height = 32
 	heath = 5
 
-	def __init__(self, x, y):
+	def __init__(self, x, y, mainPath):
+
+		self.enemyImage = pygame.image.load(mainPath + 'images/mainship_t_o.png')
+		self.hitimage = pygame.image.load(mainPath + 'images/hitted_t.png')
 
 		super(Enemy,self).__init__()
 
@@ -49,7 +49,7 @@ class Enemy(pygame.sprite.Group):
 
 		imagem = pygame.sprite.Sprite()
 
-		imagem.image = enemyImage
+		imagem.image = self.enemyImage
 		imagem.rect = imagem.image.get_rect()
 
 		imagem.rect.x = x
@@ -61,7 +61,7 @@ class Enemy(pygame.sprite.Group):
 		self.heath = self.heath - damage
 
 		for sprite in self:
-			sprite.image = hitimage
+			sprite.image = self.hitimage
 
 	def update(self):
 
@@ -101,7 +101,7 @@ class Enemy(pygame.sprite.Group):
 
 		for sprite in self:
 			sprite.rect.x += (self.direction * self.velocidade)
-			sprite.image = enemyImage
+			sprite.image = self.enemyImage
 			self.x = sprite.rect.x
 			self.y = sprite.rect.y			
 
@@ -132,7 +132,7 @@ class Enemy(pygame.sprite.Group):
 
 			sprite.rect.x += diffX
 			sprite.rect.y += diffY
-			sprite.image = enemyImage
+			sprite.image = self.enemyImage
 
 		for sprite in self.group:
 			sprite.rect.x += diffX

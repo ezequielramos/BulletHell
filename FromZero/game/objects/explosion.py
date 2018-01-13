@@ -1,25 +1,28 @@
 import pygame
 
 pygame.mixer.init() 
-explosionSound = pygame.mixer.Sound("sounds/Explosion.wav")
-explosionImage = pygame.image.load('images/explosion_t.png')
 
 class Explosions(pygame.sprite.Group):
 
 	width = 32
 	height = 32
 
-	def __init__(self):
+	def __init__(self, mainPath):
+
+		self.explosionSound = pygame.mixer.Sound(mainPath + "sounds/Explosion.wav")
+		self.explosionImage = pygame.image.load(mainPath + 'images/explosion_t.png')
+
+
 		super(Explosions,self).__init__()
 
 	def addExplosion(self, x, y):
 
-		explosionSound.play()
+		self.explosionSound.play()
 
 		base = pygame.sprite.Sprite()
 		base.fps = 0
 
-		base.image = explosionImage
+		base.image = self.explosionImage
 
 		base.rect = base.image.get_rect()
 

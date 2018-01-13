@@ -1,15 +1,16 @@
 import pygame
 
 pygame.mixer.init() 
-bulletsound = pygame.mixer.Sound("sounds/Laser_Shoot.wav")
-bulletImage = pygame.image.load('images/simple_laser_shot_t.png')
 
 class Bullet(pygame.sprite.Group):
 	width = 3
 	height = 6
 	damage = 1
 
-	def __init__(self):
+	def __init__(self, mainPath):
+
+		self.bulletsound = pygame.mixer.Sound(mainPath + "sounds/Laser_Shoot.wav")
+		self.bulletImage = pygame.image.load(mainPath + 'images/simple_laser_shot_t.png')
 
 		super(Bullet,self).__init__()
 
@@ -25,11 +26,11 @@ class Bullet(pygame.sprite.Group):
 
 	def shot(self, x, y):
 
-		bulletsound.play()
+		self.bulletsound.play()
 
 		base = pygame.sprite.Sprite()
 
-		base.image = bulletImage
+		base.image = self.bulletImage
 
 		base.rect = base.image.get_rect()
 

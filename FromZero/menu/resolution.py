@@ -2,13 +2,13 @@ from . import basic
 import sqlite3
 import game
 
-def resolutionmenu(pygame):
+def resolutionmenu(pygame, mainPath):
     import sys
 
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
 
-    optionsmenu = basic.Menu(['1280 x 720','800 x 450'], pygame)#necessary
+    optionsmenu = basic.Menu(['1280 x 720','800 x 450'], pygame, mainPath)#necessary
     optionsmenu.draw()
     
     pygame.key.set_repeat(199,69)
@@ -34,7 +34,7 @@ def resolutionmenu(pygame):
 
                     surface = pygame.display.set_mode((game.static.width,game.static.height))
 
-                    conn = sqlite3.connect('data/data.db')
+                    conn = sqlite3.connect(mainPath + 'data/data.db')
                     c = conn.cursor()
                     c.execute("UPDATE config set width = ?, height = ?", (game.static.width, game.static.height))
                     conn.commit()

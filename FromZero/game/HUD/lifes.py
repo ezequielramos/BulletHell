@@ -1,15 +1,16 @@
 import pygame
 import game.static
 
-noheath = pygame.image.load('images/no_heath_t.png')
-fullheath = pygame.image.load('images/full_heath_t.png')
-
 class Lifes(pygame.sprite.Group):
 
 	x = 0
 	y = 0
 
-	def __init__(self):
+	def __init__(self, mainPath):
+
+		self.noheath = pygame.image.load(mainPath + 'images/no_heath_t.png')
+		self.fullheath = pygame.image.load(mainPath + 'images/full_heath_t.png')
+
 
 		super(Lifes,self).__init__()
 
@@ -22,7 +23,7 @@ class Lifes(pygame.sprite.Group):
 
 			imagem = pygame.sprite.Sprite()
 
-			imagem.image = noheath
+			imagem.image = self.noheath
 			imagem.rect = imagem.image.get_rect()
 
 			imagem.rect.x = self.x + (17 * x)
@@ -37,6 +38,6 @@ class Lifes(pygame.sprite.Group):
 		for x in range(0,5):
 
 			if x > game.static.lifes-1:
-				self.heart[x].image = noheath
+				self.heart[x].image = self.noheath
 			else:
-				self.heart[x].image = fullheath
+				self.heart[x].image = self.fullheath

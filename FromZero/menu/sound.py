@@ -2,13 +2,13 @@ from . import basic
 import sqlite3
 import game
 
-def soundmenu(pygame):
+def soundmenu(pygame, mainPath):
     import sys
 
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
 
-    optionsmenu = basic.Menu(['100%','80%','60%','40%','20%','Muted'], pygame)#necessary
+    optionsmenu = basic.Menu(['100%','80%','60%','40%','20%','Muted'], pygame, mainPath)#necessary
     optionsmenu.draw()
     
     pygame.key.set_repeat(199,69)
@@ -40,7 +40,7 @@ def soundmenu(pygame):
 
                     pygame.mixer.music.set_volume(0.5*game.static.volume)
 
-                    conn = sqlite3.connect('data/data.db')
+                    conn = sqlite3.connect(mainPath + 'data/data.db')
                     c = conn.cursor()
                     c.execute("UPDATE config set volume = ?", (game.static.volume, ))
                     conn.commit()

@@ -5,12 +5,12 @@ from . import sound
 import sys
 from pygame.locals import *
 
-def optionsmenu(pygame):
+def optionsmenu(pygame, mainPath):
 
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
 
-    optionsmenu = basic.Menu(['Sound Volume','Keys','Resolution', 'Back'], pygame)#necessary
+    optionsmenu = basic.Menu(['Sound Volume','Keys','Resolution', 'Back'], pygame, mainPath)#necessary
     optionsmenu.draw()#necessary
     
     pygame.key.set_repeat(199,69)#(delay,interval)
@@ -28,13 +28,13 @@ def optionsmenu(pygame):
                 if event.key == K_RETURN:
 
                     if optionsmenu.get_position() == 0:#som
-                        sound.soundmenu(pygame)
+                        sound.soundmenu(pygame, mainPath)
 
                     if optionsmenu.get_position() == 1:#keys
                         print("vitoria")
 
                     if optionsmenu.get_position() == 2:#resolution
-                        resolution.resolutionmenu(pygame)
+                        resolution.resolutionmenu(pygame, mainPath)
 
                     if optionsmenu.get_position() == 3:#back
                         loop = False

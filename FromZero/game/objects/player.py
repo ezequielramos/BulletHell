@@ -6,7 +6,7 @@ class Player(pygame.sprite.Group):
 
 	width = 32
 	height = 32
-	def __init__(self, x, y):
+	def __init__(self, x, y, mainPath):
 
 		super(Player,self).__init__()
 
@@ -40,7 +40,7 @@ class Player(pygame.sprite.Group):
 
 		self.imagem = pygame.sprite.Sprite()
 
-		self.imagem.image = pygame.image.load('images/mainship_t.png')
+		self.imagem.image = pygame.image.load(mainPath + 'images/mainship_t.png')
 
 		self.imagem.rect = self.imagem.image.get_rect()
 
@@ -51,7 +51,7 @@ class Player(pygame.sprite.Group):
 
 		self.add(self.imagem)
 
-		self.bullets = bullet.Bullet()
+		self.bullets = bullet.Bullet(mainPath)
 
 	def update(self):
 

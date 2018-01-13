@@ -2,11 +2,11 @@ import pygame
 
 class GameOver(pygame.sprite.Group):
 
-	def __init__(self,x,y):
+	def __init__(self,x,y, mainPath):
 
 		super(GameOver,self).__init__()
 
-		self.font = pygame.font.Font('data/coders_crux/coders_crux.ttf', 64)
+		self.font = pygame.font.Font(mainPath + 'data/coders_crux/coders_crux.ttf', 64)
 		surface = self.font.render("GAME OVER", 1, (255, 255, 153) )
 
 		self.Score = pygame.sprite.Sprite()

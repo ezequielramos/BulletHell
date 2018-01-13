@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sqlite3
 import pygame
 from pygame.locals import *
@@ -8,6 +10,10 @@ from os import path
 
 import game
 import menu
+import os
+
+mainPath = os.path.dirname(os.path.abspath(__file__)) + "/"
+game.run.objects.background.loadThings(mainPath)
 
 if not pygame.display.get_init():
     pygame.display.init()
@@ -16,7 +22,7 @@ if not pygame.font.get_init():
     pygame.font.init()
 
 
-conn = sqlite3.connect('data/data.db')
+conn = sqlite3.connect(mainPath + 'data/data.db')
 
 c = conn.cursor()
 
@@ -38,13 +44,13 @@ except:
 
 pygame.init()
 pygame.mixer.init()
-pygame.mixer.music.load("sounds/main.mp3")
+pygame.mixer.music.load(mainPath + "sounds/main.mp3")
 pygame.mixer.music.set_volume(0.5*game.static.volume)
 pygame.mixer.music.play(-1)
 
 pygame.display.set_mode((game.static.width,game.static.height))
 
-a = pygame.image.load('images/mainship_t.png')
+a = pygame.image.load(mainPath + 'images/mainship_t.png')
 pygame.display.set_icon(a)
 pygame.display.set_caption("FromZero")
 
@@ -52,4 +58,4 @@ conn.close()
 
 pygame.mouse.set_visible(False)
 
-menu.main.mainmenu(pygame, game.run, game.static)
+menu.main.mainmenu(pygame, game.run, game.static, mainPath)

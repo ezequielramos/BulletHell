@@ -6,14 +6,14 @@ class Score(pygame.sprite.Group):
 	x = 0
 	y = 0
 
-	def __init__(self):
+	def __init__(self, mainPath):
 
 		super(Score,self).__init__()
 
 		self.x = 0
 		self.y = game.static.height - 50
 
-		self.font = pygame.font.Font('data/coders_crux/coders_crux.ttf', 32)
+		self.font = pygame.font.Font(mainPath + 'data/coders_crux/coders_crux.ttf', 32)
 		surface = self.font.render("Score: " + str(game.static.score).zfill(7), 1, (255, 255, 153) )
 
 		self.Score = pygame.sprite.Sprite()

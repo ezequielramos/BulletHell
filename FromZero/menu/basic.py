@@ -8,11 +8,12 @@ class Surface:
 
 class Menu:
 
-    def __init__(self, list, pygame):
+    def __init__(self, list, pygame, mainPath):
 
         self.list = []
         self.flap = []
         self.font_size = 32
+        self.mainPath = mainPath
         self.font_path = 'data/coders_crux/coders_crux.ttf'
         self.font = pygame.font.Font
         self.dest_surface = pygame.display.get_surface()
@@ -70,7 +71,7 @@ class Menu:
 
         movement = 0
         self.menu_height = 0
-        self.font = self.pygame.font.Font(self.font_path, self.font_size)
+        self.font = self.pygame.font.Font(self.mainPath + self.font_path, self.font_size)
         for i in range(self.quantity_pol):
             self.flap.append(Surface(self.pygame))
             self.flap[i].text = self.list[i]

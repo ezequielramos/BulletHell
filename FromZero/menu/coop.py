@@ -1,10 +1,10 @@
 from . import basic
 from pygame.locals import *
 
-def coopmenu(pygame, game):
+def coopmenu(pygame, game, mainPath):
 
     def host():
-        game.start(pygame, False)
+        game.start(pygame, False, mainPath)
         return True
 
     def join():
@@ -17,7 +17,7 @@ def coopmenu(pygame, game):
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
 
-    mainmenu = basic.Menu(['Host', 'Join', 'Back'], pygame)
+    mainmenu = basic.Menu(['Host', 'Join', 'Back'], pygame, mainPath)
 
     menuFunctions = [host,join,back]
 

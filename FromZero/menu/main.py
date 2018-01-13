@@ -4,18 +4,18 @@ from . import coop
 import sys
 from pygame.locals import *
 
-def mainmenu(pygame, game, static):
+def mainmenu(pygame, game, static, mainPath):
 
     def singleplayer():
-        game.start(pygame, True)
+        game.start(pygame, True, mainPath)
         return True
 
     def coopMenu():
-        coop.coopmenu(pygame, game)
+        coop.coopmenu(pygame, game, mainPath)
         return True
 
     def optionsMenu():
-        options.optionsmenu(pygame)
+        options.optionsmenu(pygame, mainPath)
         return True
 
     def quit():
@@ -26,7 +26,7 @@ def mainmenu(pygame, game, static):
     surface = pygame.display.get_surface()
     surface.fill((51,51,51))
 
-    mainmenu = basic.Menu(['Singleplayer', 'Co-op','Options','Quit'], pygame)#necessary
+    mainmenu = basic.Menu(['Singleplayer', 'Co-op','Options','Quit'], pygame, mainPath)#necessary
 
     menuFunctions = [singleplayer,coopMenu,optionsMenu,quit]
 

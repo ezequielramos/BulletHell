@@ -48,7 +48,7 @@ def Play(pygame, player1):
 
 	return True
 
-def start(pygame, singlePlayer):
+def start(pygame, singlePlayer, mainPath):
 
 	pygame.key.set_repeat(199,69)#(delay,interval)
 	pygame.display.update()
@@ -61,13 +61,13 @@ def start(pygame, singlePlayer):
 	clock = pygame.time.Clock()
 
 	if singlePlayer:
-		nave = objects.player.Player(375,350)
+		nave = objects.player.Player(375,350, mainPath)
 	else:
-		nave = objects.player.Player(275,350)
+		nave = objects.player.Player(275,350, mainPath)
 
 	gameHud = HUD.HUD()
-	gameInfoHud = HUD.score.Score()
-	lifesHud = HUD.lifes.Lifes()
+	gameInfoHud = HUD.score.Score(mainPath)
+	lifesHud = HUD.lifes.Lifes(mainPath)
 
 	#backgrounds = objects.background.Background()
 
@@ -75,14 +75,14 @@ def start(pygame, singlePlayer):
 
 	for i in range(0,17):
 
-		enemy = objects.enemy.Enemy(-50 + (i*(-50)),50)
+		enemy = objects.enemy.Enemy(-50 + (i*(-50)),50, mainPath)
 		enemies.append(enemy)
 
 	surface = pygame.display.get_surface()
 
-	gameover = HUD.gameover.GameOver(surface.get_rect().centerx,surface.get_rect().centery)
+	gameover = HUD.gameover.GameOver(surface.get_rect().centerx,surface.get_rect().centery, mainPath)
 
-	explosions = objects.explosion.Explosions()
+	explosions = objects.explosion.Explosions(mainPath)
 
 	while Play(pygame, nave):
 

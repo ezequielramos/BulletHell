@@ -1,6 +1,9 @@
 import pygame
 
-backgroundImage = pygame.image.load('images/background.jpg')
+backgroundImage = ''
+
+def loadThings(mainPath):
+	backgroundImage = pygame.image.load(mainPath + 'images/background.jpg')
 
 class Background(pygame.sprite.Group):
 	width = 1920
